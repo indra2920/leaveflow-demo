@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaveFlow Supervisor - Dashboard Approval</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --supervisor-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --hover-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--supervisor-gradient) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .demo-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--supervisor-gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: var(--card-shadow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: var(--supervisor-gradient);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .welcome-card {
+            background: var(--supervisor-gradient);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--supervisor-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(40, 167, 69, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .approval-card {
+            border-left: 5px solid #ffc107;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .approval-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--warning-gradient);
+        }
+
+        .approval-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-success {
+            background: var(--supervisor-gradient);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--supervisor-gradient);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--supervisor-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .priority-high {
+            border-left-color: #dc3545 !important;
+            background: linear-gradient(135deg, #fde8e8 0%, #ffffff 100%) !important;
+        }
+
+        .priority-medium {
+            border-left-color: #ffc107 !important;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%) !important;
+        }
+
+        .priority-low {
+            border-left-color: #28a745 !important;
+            background: linear-gradient(135deg, #e8f5e8 0%, #ffffff 100%) !important;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .approval-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .employee-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--supervisor-gradient);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--supervisor-gradient);
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .demo-badge {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .welcome-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .approval-actions {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-badge">
+        <i class="fas fa-user-tie"></i> SUPERVISOR VIEW
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt me-2"></i>LeaveFlow Supervisor
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <img src="https://ui-avatars.com/api/?name=Ahmad+Wijaya&background=28a745&color=fff&size=40&rounded=true" 
+                             alt="Avatar" class="rounded-circle me-2">
+                        <span class="fw-medium">Ahmad Wijaya</span>
+                        <small class="d-block text-white-50">Supervisor</small>
+                    </div>
+                    <button class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div class="welcome-card fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">
+                        <i class="fas fa-briefcase me-2"></i>Dashboard Supervisor
+                    </h2>
+                    <p class="mb-3 opacity-75">
+                        <i class="fas fa-id-badge me-2"></i>SPV001 • Supervisor • Kantor Pusat Jakarta
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-clock me-2"></i>2 Menunggu Approval
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-users me-2"></i>5 Staff Dibawahi
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="stats-card glass-effect">
+                        <div class="stats-number">15</div>
+                        <div class="text-white-50">Approval Bulan Ini</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card fade-in" style="animation-delay: 0.1s">
+                    <i class="fas fa-hourglass-half fa-2x text-warning mb-3"></i>
+                    <div class="stats-number">2</div>
+                    <div class="text-muted">Menunggu Approval</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card fade-in" style="animation-delay: 0.2s">
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <div class="stats-number">12</div>
+                    <div class="text-muted">Disetujui</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card fade-in" style="animation-delay: 0.3s">
+                    <i class="fas fa-times-circle fa-2x text-danger mb-3"></i>
+                    <div class="stats-number">1</div>
+                    <div class="text-muted">Ditolak</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card fade-in" style="animation-delay: 0.4s">
+                    <i class="fas fa-users fa-2x text-info mb-3"></i>
+                    <div class="stats-number">5</div>
+                    <div class="text-muted">Staff Aktif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="approvals-tab" data-bs-toggle="tab" data-bs-target="#approvals" type="button">
+                    <i class="fas fa-check-circle me-2"></i>Persetujuan
+                    <span class="notification-badge">2</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">
+                    <i class="fas fa-history me-2"></i>Riwayat
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="team-tab" data-bs-toggle="tab" data-bs-target="#team" type="button">
+                    <i class="fas fa-users me-2"></i>Tim Saya
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-4" id="mainTabContent">
+            <!-- Approvals Tab -->
+            <div class="tab-pane fade show active" id="approvals">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-clipboard-check me-2"></i>Pengajuan Menunggu Persetujuan</h5>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-filter me-1"></i>Filter
+                            </button>
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-sort me-1"></i>Urutkan
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- High Priority Approval -->
+                        <div class="approval-card card priority-high slide-in">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-1 text-center">
+                                        <img src="https://ui-avatars.com/api/?name=Dewi+Lestari&background=dc3545&color=fff&size=50&rounded=true" 
+                                             alt="Dewi" class="employee-avatar">
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <h6 class="mb-0 fw-bold me-2">Cuti Liburan Keluarga</h6>
+                                            <span class="badge bg-danger">Urgent</span>
+                                        </div>
+                                        <p class="text-muted mb-2">
+                                            <strong>Karyawan:</strong> Dewi Lestari (STF001) • Staff<br>
+                                            <strong>Periode:</strong> 01 Nov - 03 Nov 2025 (3 hari)<br>
+                                            <strong>Alasan:</strong> Liburan keluarga ke Bali untuk refreshing
+                                        </p>
+                                        <div class="d-flex align-items-center">
+                                            <small class="text-muted me-3">
+                                                <i class="fas fa-clock me-1"></i>Diajukan 23 Okt 2025, 20:30
+                                            </small>
+                                            <small class="text-danger">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Deadline: 2 hari lagi
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="mb-2">
+                                            <span class="badge bg-warning">Level 1</span>
+                                        </div>
+                                        <small class="text-muted">Approval Pertama</small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="approval-actions">
+                                            <button class="btn btn-success btn-sm" onclick="approveRequest('Dewi Lestari', 'approved', 'high')">
+                                                <i class="fas fa-check me-1"></i>Setujui
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="approveRequest('Dewi Lestari', 'rejected', 'high')">
+                                                <i class="fas fa-times me-1"></i>Tolak
+                                            </button>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showDetailModal('Dewi Lestari')">
+                                                <i class="fas fa-eye me-1"></i>Detail
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medium Priority Approval -->
+                        <div class="approval-card card priority-medium slide-in" style="animation-delay: 0.1s">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-1 text-center">
+                                        <img src="https://ui-avatars.com/api/?name=Andi+Pratama&background=ffc107&color=000&size=50&rounded=true" 
+                                             alt="Andi" class="employee-avatar">
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <h6 class="mb-0 fw-bold me-2">Offsite Meeting Klien</h6>
+                                            <span class="badge bg-warning">Normal</span>
+                                        </div>
+                                        <p class="text-muted mb-2">
+                                            <strong>Karyawan:</strong> Andi Pratama (STF002) • Staff<br>
+                                            <strong>Periode:</strong> 28 Okt - 29 Okt 2025 (2 hari)<br>
+                                            <strong>Alasan:</strong> Meeting dengan klien di Surabaya untuk presentasi proposal
+                                        </p>
+                                        <div class="d-flex align-items-center">
+                                            <small class="text-muted me-3">
+                                                <i class="fas fa-clock me-1"></i>Diajukan 23 Okt 2025, 15:45
+                                            </small>
+                                            <small class="text-warning">
+                                                <i class="fas fa-calendar me-1"></i>Deadline: 5 hari lagi
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="mb-2">
+                                            <span class="badge bg-warning">Level 1</span>
+                                        </div>
+                                        <small class="text-muted">Approval Pertama</small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="approval-actions">
+                                            <button class="btn btn-success btn-sm" onclick="approveRequest('Andi Pratama', 'approved', 'medium')">
+                                                <i class="fas fa-check me-1"></i>Setujui
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="approveRequest('Andi Pratama', 'rejected', 'medium')">
+                                                <i class="fas fa-times me-1"></i>Tolak
+                                            </button>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showDetailModal('Andi Pratama')">
+                                                <i class="fas fa-eye me-1"></i>Detail
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-pane fade" id="history">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h5><i class="fas fa-history me-2"></i>Riwayat Approval</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">Menyetujui Cuti Sari Indah</h6>
+                                        <p class="text-muted mb-1">Cuti untuk keperluan keluarga (2 hari)</p>
+                                        <small class="text-success"><i class="fas fa-check-circle me-1"></i>22 Okt 2025, 14:30</small>
+                                    </div>
+                                    <span class="badge bg-success">Approved</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">Menyetujui Offsite Budi Santoso</h6>
+                                        <p class="text-muted mb-1">Training pengembangan skill (2 hari)</p>
+                                        <small class="text-success"><i class="fas fa-check-circle me-1"></i>20 Okt 2025, 09:15</small>
+                                    </div>
+                                    <span class="badge bg-success">Approved</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">Menolak Cuti Maya Sari</h6>
+                                        <p class="text-muted mb-1">Cuti mendadak tanpa alasan yang jelas</p>
+                                        <small class="text-danger"><i class="fas fa-times-circle me-1"></i>18 Okt 2025, 16:20</small>
+                                    </div>
+                                    <span class="badge bg-danger">Rejected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Tab -->
+            <div class="tab-pane fade" id="team">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h5><i class="fas fa-users me-2"></i>Tim Saya</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=Dewi+Lestari&background=667eea&color=fff&size=50&rounded=true" 
+                                                 alt="Dewi" class="employee-avatar me-3">
+                                            <div>
+                                                <h6 class="mb-1">Dewi Lestari</h6>
+                                                <small class="text-muted">STF001 • Staff</small>
+                                                <div class="mt-1">
+                                                    <span class="badge bg-warning">1 Pending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=Andi+Pratama&background=28a745&color=fff&size=50&rounded=true" 
+                                                 alt="Andi" class="employee-avatar me-3">
+                                            <div>
+                                                <h6 class="mb-1">Andi Pratama</h6>
+                                                <small class="text-muted">STF002 • Staff</small>
+                                                <div class="mt-1">
+                                                    <span class="badge bg-warning">1 Pending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none;">
+                <div class="modal-header" style="background: var(--supervisor-gradient); color: white; border-radius: 20px 20px 0 0;">
+                    <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Detail Pengajuan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalContent">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function approveRequest(employeeName, status, priority) {
+            const action = status === 'approved' ? 'menyetujui' : 'menolak';
+            const comment = prompt(`Masukkan komentar untuk ${action} pengajuan ${employeeName} (opsional):`);
+            
+            if (comment !== null) {
+                // Show loading state
+                const card = event.target.closest('.approval-card');
+                card.style.opacity = '0.7';
+                card.style.pointerEvents = 'none';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert(`✅ Pengajuan ${employeeName} berhasil di${status === 'approved' ? 'setujui' : 'tolak'}!\n\nKomentar: ${comment || 'Tidak ada komentar'}\n\n${status === 'approved' ? 'Pengajuan akan diteruskan ke Manager untuk approval selanjutnya.' : 'Pengajuan ditolak dan karyawan akan mendapat notifikasi.'}`);
+                    
+                    // Remove card with animation
+                    card.style.transform = 'translateX(100%)';
+                    card.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        card.remove();
+                        updateBadgeCount();
+                    }, 300);
+                }, 1000);
+            }
+        }
+
+        function showDetailModal(employeeName) {
+            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="https://ui-avatars.com/api/?name=${employeeName.replace(' ', '+')}&background=667eea&color=fff&size=100&rounded=true" 
+                             alt="${employeeName}" class="rounded-circle mb-3">
+                        <h5>${employeeName}</h5>
+                        <p class="text-muted">STF001 • Staff</p>
+                    </div>
+                    <div class="col-md-8">
+                        <h6>Detail Pengajuan</h6>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Jenis:</strong></td>
+                                <td>Cuti/Libur</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Periode:</strong></td>
+                                <td>01 Nov - 03 Nov 2025 (3 hari)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Alasan:</strong></td>
+                                <td>Liburan keluarga ke Bali untuk refreshing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sisa Cuti:</strong></td>
+                                <td>12 hari</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Riwayat Cuti:</strong></td>
+                                <td>Terakhir cuti 2 bulan lalu</td>
+                            </tr>
+                        </table>
+                        
+                        <h6 class="mt-4">Alur Approval</h6>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-warning me-2">1. Supervisor</span>
+                            <i class="fas fa-arrow-right me-2"></i>
+                            <span class="badge bg-secondary me-2">2. Manager</span>
+                            <i class="fas fa-arrow-right me-2"></i>
+                            <span class="badge bg-secondary">3. Director</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.show();
+        }
+
+        function updateBadgeCount() {
+            const badge = document.querySelector('.notification-badge');
+            const currentCount = parseInt(badge.textContent);
+            if (currentCount > 1) {
+                badge.textContent = currentCount - 1;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add entrance animations
+            document.querySelectorAll('.fade-in, .slide-in').forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaveFlow Admin - Master Data Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-gradient: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            --info-gradient: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --hover-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #f8f4ff 0%, #e8f0fe 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--admin-gradient) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .demo-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--admin-gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: var(--admin-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            margin: 0 5px;
+            padding: 15px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #6f42c1;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--admin-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(111, 66, 193, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--admin-gradient);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .table-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table-modern thead {
+            background: var(--admin-gradient);
+            color: white;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: rgba(111, 66, 193, 0.05);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-card {
+            background: var(--admin-gradient);
+            color: white;
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(111, 66, 193, 0.3);
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: var(--admin-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            border: none;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .action-buttons .btn {
+            margin: 0 2px;
+            padding: 8px 12px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .welcome-card {
+                padding: 20px;
+                text-align: center;
+            }
+            
+            .stats-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Badge -->
+    <div class="demo-badge">
+        <i class="fas fa-database me-2"></i>DEMO: Master Data Management
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-leaf me-2"></i>LeaveFlow Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="demo-admin-full.html">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-database me-1"></i>Master Data
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="me-3 text-end">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=fff&color=6f42c1&size=40" 
+                             alt="Admin" class="rounded-circle me-2">
+                        <span class="fw-medium">Admin User</span>
+                        <small class="d-block text-white-50">Master Data Manager</small>
+                    </div>
+                    <button class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div class="welcome-card fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">
+                        <i class="fas fa-database me-2"></i>Master Data Management
+                    </h2>
+                    <p class="mb-3 opacity-75">
+                        <i class="fas fa-cogs me-2"></i>Kelola data master sistem: Wilayah, Lokasi Kerja, dan Jabatan
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-map-marker-alt me-2"></i><span id="regionCount">4</span> Wilayah
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-building me-2"></i><span id="locationCount">8</span> Lokasi Kerja
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-user-tie me-2"></i><span id="positionCount">5</span> Jabatan
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-users me-2"></i><span id="employeeCount">5</span> Karyawan
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="stats-card glass-effect">
+                        <div class="stats-number">100%</div>
+                        <div class="text-white-50">Data Integrity</div>
+                        <div class="mt-2">
+                            <small class="text-white-50">All Systems Operational</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Data Tabs -->
+        <ul class="nav nav-tabs" id="masterDataTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="regions-tab" data-bs-toggle="tab" data-bs-target="#regions" type="button" role="tab">
+                    <i class="fas fa-map-marker-alt me-2"></i>Wilayah Kerja
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab">
+                    <i class="fas fa-building me-2"></i>Lokasi Kerja
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="positions-tab" data-bs-toggle="tab" data-bs-target="#positions" type="button" role="tab">
+                    <i class="fas fa-user-tie me-2"></i>Jabatan
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="employees-tab" data-bs-toggle="tab" data-bs-target="#employees" type="button" role="tab">
+                    <i class="fas fa-users me-2"></i>Data Karyawan
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="masterDataTabContent">
+            <!-- Regions Tab -->
+            <div class="tab-pane fade show active" id="regions" role="tabpanel">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-map-marker-alt me-2"></i>Manajemen Wilayah Kerja</h5>
+                        <button class="btn btn-light" onclick="addRegion()">
+                            <i class="fas fa-plus me-2"></i>Tambah Wilayah
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama Wilayah</th>
+                                        <th>Kode</th>
+                                        <th>Lokasi Kerja</th>
+                                        <th>Dibuat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="regionsTableBody">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Jakarta</strong></td>
+                                        <td><span class="badge bg-primary">JKT</span></td>
+                                        <td><span class="badge bg-info">3 Lokasi</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editRegion(1)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteRegion(1)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Bandung</strong></td>
+                                        <td><span class="badge bg-primary">BDG</span></td>
+                                        <td><span class="badge bg-info">2 Lokasi</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editRegion(2)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteRegion(2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Surabaya</strong></td>
+                                        <td><span class="badge bg-primary">SBY</span></td>
+                                        <td><span class="badge bg-info">2 Lokasi</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editRegion(3)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteRegion(3)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><strong>Medan</strong></td>
+                                        <td><span class="badge bg-primary">MDN</span></td>
+                                        <td><span class="badge bg-info">1 Lokasi</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editRegion(4)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteRegion(4)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work Locations Tab -->
+            <div class="tab-pane fade" id="locations" role="tabpanel">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-building me-2"></i>Manajemen Lokasi Kerja</h5>
+                        <button class="btn btn-light" onclick="addLocation()">
+                            <i class="fas fa-plus me-2"></i>Tambah Lokasi
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama Lokasi</th>
+                                        <th>Alamat</th>
+                                        <th>Wilayah</th>
+                                        <th>Karyawan</th>
+                                        <th>Dibuat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="locationsTableBody">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Kantor Pusat Jakarta</strong></td>
+                                        <td>Jl. Sudirman No. 1, Jakarta</td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-success">5 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editLocation(1)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteLocation(1)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Cabang Bandung</strong></td>
+                                        <td>Jl. Asia Afrika No. 10, Bandung</td>
+                                        <td><span class="badge bg-primary">Bandung</span></td>
+                                        <td><span class="badge bg-success">0 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editLocation(2)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteLocation(2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Cabang Surabaya</strong></td>
+                                        <td>Jl. Pemuda No. 5, Surabaya</td>
+                                        <td><span class="badge bg-primary">Surabaya</span></td>
+                                        <td><span class="badge bg-success">0 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editLocation(3)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteLocation(3)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Positions Tab -->
+            <div class="tab-pane fade" id="positions" role="tabpanel">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-user-tie me-2"></i>Manajemen Jabatan</h5>
+                        <button class="btn btn-light" onclick="addPosition()">
+                            <i class="fas fa-plus me-2"></i>Tambah Jabatan
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama Jabatan</th>
+                                        <th>Level</th>
+                                        <th>Level Approval</th>
+                                        <th>Karyawan</th>
+                                        <th>Dibuat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="positionsTableBody">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Staff</strong></td>
+                                        <td><span class="badge bg-secondary">Level 1</span></td>
+                                        <td><span class="badge bg-info">Approval 1</span></td>
+                                        <td><span class="badge bg-success">1 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editPosition(1)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deletePosition(1)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Supervisor</strong></td>
+                                        <td><span class="badge bg-secondary">Level 2</span></td>
+                                        <td><span class="badge bg-info">Approval 2</span></td>
+                                        <td><span class="badge bg-success">1 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editPosition(2)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deletePosition(2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Manager</strong></td>
+                                        <td><span class="badge bg-secondary">Level 3</span></td>
+                                        <td><span class="badge bg-info">Approval 3</span></td>
+                                        <td><span class="badge bg-success">1 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editPosition(3)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deletePosition(3)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><strong>Director</strong></td>
+                                        <td><span class="badge bg-secondary">Level 4</span></td>
+                                        <td><span class="badge bg-info">Approval 4</span></td>
+                                        <td><span class="badge bg-success">1 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editPosition(4)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deletePosition(4)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td><strong>Administrator</strong></td>
+                                        <td><span class="badge bg-danger">Level 5</span></td>
+                                        <td><span class="badge bg-danger">Approval 5</span></td>
+                                        <td><span class="badge bg-success">1 Karyawan</span></td>
+                                        <td>2025-01-01</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-warning" onclick="editPosition(5)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deletePosition(5)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Tab -->
+            <div class="tab-pane fade" id="employees" role="tabpanel">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-users me-2"></i>Manajemen Data Karyawan</h5>
+                        <button class="btn btn-light" onclick="addEmployee()">
+                            <i class="fas fa-user-plus me-2"></i>Tambah Karyawan
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Jabatan</th>
+                                        <th>Lokasi</th>
+                                        <th>Supervisor</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeesTableBody">
+                                    <tr>
+                                        <td><strong>DIR001</strong></td>
+                                        <td>Budi Santoso</td>
+                                        <td>director@company.com</td>
+                                        <td><span class="badge bg-danger">Director</span></td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-secondary">-</span></td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-info" onclick="viewEmployee(1)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="editEmployee(1)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(1)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MGR001</strong></td>
+                                        <td>Siti Rahayu</td>
+                                        <td>manager@company.com</td>
+                                        <td><span class="badge bg-warning">Manager</span></td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-info">Budi Santoso</span></td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-info" onclick="viewEmployee(2)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="editEmployee(2)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SPV001</strong></td>
+                                        <td>Ahmad Wijaya</td>
+                                        <td>supervisor@company.com</td>
+                                        <td><span class="badge bg-info">Supervisor</span></td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-info">Siti Rahayu</span></td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-info" onclick="viewEmployee(3)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="editEmployee(3)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(3)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>STF001</strong></td>
+                                        <td>Dewi Lestari</td>
+                                        <td>staff@company.com</td>
+                                        <td><span class="badge bg-secondary">Staff</span></td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-info">Ahmad Wijaya</span></td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-info" onclick="viewEmployee(4)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="editEmployee(4)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(4)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ADM001</strong></td>
+                                        <td>Admin User</td>
+                                        <td>admin@company.com</td>
+                                        <td><span class="badge bg-danger">Administrator</span></td>
+                                        <td><span class="badge bg-primary">Jakarta</span></td>
+                                        <td><span class="badge bg-secondary">-</span></td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-sm btn-info" onclick="viewEmployee(5)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="editEmployee(5)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(5)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Region Modal -->
+    <div class="modal fade" id="regionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="regionModalTitle">
+                        <i class="fas fa-map-marker-alt me-2"></i>Tambah Wilayah Kerja
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="regionForm">
+                        <input type="hidden" id="regionId">
+                        <div class="mb-3">
+                            <label for="regionName" class="form-label">Nama Wilayah</label>
+                            <input type="text" class="form-control" id="regionName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="regionCode" class="form-label">Kode Wilayah</label>
+                            <input type="text" class="form-control" id="regionCode" maxlength="10" required>
+                            <div class="form-text">Maksimal 10 karakter, contoh: JKT, BDG</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRegion()">
+                        <i class="fas fa-save me-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalTitle">
+                        <i class="fas fa-building me-2"></i>Tambah Lokasi Kerja
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="locationForm">
+                        <input type="hidden" id="locationId">
+                        <div class="mb-3">
+                            <label for="locationName" class="form-label">Nama Lokasi</label>
+                            <input type="text" class="form-control" id="locationName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="locationAddress" class="form-label">Alamat</label>
+                            <textarea class="form-control" id="locationAddress" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="locationRegion" class="form-label">Wilayah</label>
+                            <select class="form-select" id="locationRegion" required>
+                                <option value="">Pilih Wilayah</option>
+                                <!-- Options will be loaded dynamically -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveLocation()">
+                        <i class="fas fa-save me-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Position Modal -->
+    <div class="modal fade" id="positionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="positionModalTitle">
+                        <i class="fas fa-user-tie me-2"></i>Tambah Jabatan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="positionForm">
+                        <input type="hidden" id="positionId">
+                        <div class="mb-3">
+                            <label for="positionName" class="form-label">Nama Jabatan</label>
+                            <input type="text" class="form-control" id="positionName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="positionLevel" class="form-label">Level Jabatan</label>
+                            <select class="form-select" id="positionLevel" required>
+                                <option value="">Pilih Level</option>
+                                <option value="1">Level 1 - Staff</option>
+                                <option value="2">Level 2 - Supervisor</option>
+                                <option value="3">Level 3 - Manager</option>
+                                <option value="4">Level 4 - Director</option>
+                                <option value="5">Level 5 - Administrator</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="positionApprovalLevel" class="form-label">Level Approval</label>
+                            <select class="form-select" id="positionApprovalLevel" required>
+                                <option value="">Pilih Level Approval</option>
+                                <option value="1">Approval Level 1</option>
+                                <option value="2">Approval Level 2</option>
+                                <option value="3">Approval Level 3</option>
+                                <option value="4">Approval Level 4</option>
+                                <option value="5">Approval Level 5</option>
+                            </select>
+                            <div class="form-text">Level approval menentukan urutan persetujuan dalam sistem</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="savePosition()">
+                        <i class="fas fa-save me-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div class="modal fade" id="employeeModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeModalTitle">
+                        <i class="fas fa-user-plus me-2"></i>Tambah Karyawan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <input type="hidden" id="employeeId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeIdInput" class="form-label">ID Karyawan</label>
+                                <input type="text" class="form-control" id="employeeIdInput" required>
+                                <div class="form-text">Contoh: STF001, MGR001, DIR001</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeName" class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="employeeName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="employeeEmail" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employeePassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="employeePassword" required>
+                                <div class="form-text">Minimal 8 karakter (kosongkan jika tidak ingin mengubah)</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="employeePosition" class="form-label">Jabatan</label>
+                                <select class="form-select" id="employeePosition" required>
+                                    <option value="">Pilih Jabatan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="employeeLocation" class="form-label">Lokasi Kerja</label>
+                                <select class="form-select" id="employeeLocation" required>
+                                    <option value="">Pilih Lokasi Kerja</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="employeeSupervisor" class="form-label">Supervisor</label>
+                                <select class="form-select" id="employeeSupervisor">
+                                    <option value="">Pilih Supervisor (Opsional)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeStatus" class="form-label">Status</label>
+                                <select class="form-select" id="employeeStatus" required>
+                                    <option value="active">Aktif</option>
+                                    <option value="inactive">Tidak Aktif</option>
+                                    <option value="suspended">Suspended</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" onclick="saveEmployee()">
+                        <i class="fas fa-save me-2"></i>Simpan Karyawan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Detail Modal -->
+    <div class="modal fade" id="employeeDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user me-2"></i>Detail Karyawan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="employeeDetailContent">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:3000/api';
+        let authToken = localStorage.getItem('authToken') || 'demo-admin-token';
+        
+        // Data storage - will be loaded from API or localStorage
+        let regions = [];
+        let locations = [];
+        let positions = [];
+        let employees = [];
+        
+        // Initialize data from localStorage if available
+        function initializeData() {
+            regions = JSON.parse(localStorage.getItem('masterdata_regions') || '[{"id": 1, "name": "Jakarta", "code": "JKT", "locationCount": 3, "created_at": "2025-01-01"}, {"id": 2, "name": "Bandung", "code": "BDG", "locationCount": 2, "created_at": "2025-01-01"}, {"id": 3, "name": "Surabaya", "code": "SBY", "locationCount": 2, "created_at": "2025-01-01"}, {"id": 4, "name": "Medan", "code": "MDN", "locationCount": 1, "created_at": "2025-01-01"}]');
+            
+            locations = JSON.parse(localStorage.getItem('masterdata_locations') || '[{"id": 1, "name": "Kantor Pusat Jakarta", "address": "Jl. Sudirman No. 1, Jakarta", "region_id": 1, "region_name": "Jakarta", "employeeCount": 5, "created_at": "2025-01-01"}, {"id": 2, "name": "Cabang Bandung", "address": "Jl. Asia Afrika No. 10, Bandung", "region_id": 2, "region_name": "Bandung", "employeeCount": 0, "created_at": "2025-01-01"}, {"id": 3, "name": "Cabang Surabaya", "address": "Jl. Pemuda No. 5, Surabaya", "region_id": 3, "region_name": "Surabaya", "employeeCount": 0, "created_at": "2025-01-01"}]');
+            
+            positions = JSON.parse(localStorage.getItem('masterdata_positions') || '[{"id": 1, "name": "Staff", "level": 1, "approval_level": 1, "employeeCount": 1, "created_at": "2025-01-01"}, {"id": 2, "name": "Supervisor", "level": 2, "approval_level": 2, "employeeCount": 1, "created_at": "2025-01-01"}, {"id": 3, "name": "Manager", "level": 3, "approval_level": 3, "employeeCount": 1, "created_at": "2025-01-01"}, {"id": 4, "name": "Director", "level": 4, "approval_level": 4, "employeeCount": 1, "created_at": "2025-01-01"}, {"id": 5, "name": "Administrator", "level": 5, "approval_level": 5, "employeeCount": 1, "created_at": "2025-01-01"}]');
+            
+            employees = JSON.parse(localStorage.getItem('masterdata_employees') || '[{"id": 1, "employee_id": "DIR001", "name": "Budi Santoso", "email": "director@company.com", "position_id": 4, "position_name": "Director", "work_location_id": 1, "location_name": "Kantor Pusat Jakarta", "supervisor_id": null, "supervisor_name": null, "status": "active", "created_at": "2025-01-01"}, {"id": 2, "employee_id": "MGR001", "name": "Siti Rahayu", "email": "manager@company.com", "position_id": 3, "position_name": "Manager", "work_location_id": 1, "location_name": "Kantor Pusat Jakarta", "supervisor_id": 1, "supervisor_name": "Budi Santoso", "status": "active", "created_at": "2025-01-01"}, {"id": 3, "employee_id": "SPV001", "name": "Ahmad Wijaya", "email": "supervisor@company.com", "position_id": 2, "position_name": "Supervisor", "work_location_id": 1, "location_name": "Kantor Pusat Jakarta", "supervisor_id": 2, "supervisor_name": "Siti Rahayu", "status": "active", "created_at": "2025-01-01"}, {"id": 4, "employee_id": "STF001", "name": "Dewi Lestari", "email": "staff@company.com", "position_id": 1, "position_name": "Staff", "work_location_id": 1, "location_name": "Kantor Pusat Jakarta", "supervisor_id": 3, "supervisor_name": "Ahmad Wijaya", "status": "active", "created_at": "2025-01-01"}, {"id": 5, "employee_id": "ADM001", "name": "Admin User", "email": "admin@company.com", "position_id": 5, "position_name": "Administrator", "work_location_id": 1, "location_name": "Kantor Pusat Jakarta", "supervisor_id": null, "supervisor_name": null, "status": "active", "created_at": "2025-01-01"}]');
+        }
+        
+        // Save data to localStorage (real-time persistence)
+        function saveToLocalStorage() {
+            localStorage.setItem('masterdata_regions', JSON.stringify(regions));
+            localStorage.setItem('masterdata_locations', JSON.stringify(locations));
+            localStorage.setItem('masterdata_positions', JSON.stringify(positions));
+            localStorage.setItem('masterdata_employees', JSON.stringify(employees));
+        }
+        
+        // API functions with localStorage fallback
+        async function loadDataFromAPI() {
+            try {
+                // Try to load from API first
+                const [regionsRes, locationsRes, positionsRes, employeesRes] = await Promise.all([
+                    fetch(`${API_BASE}/admin/regions`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    }),
+                    fetch(`${API_BASE}/admin/work-locations`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    }),
+                    fetch(`${API_BASE}/admin/positions`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    }),
+                    fetch(`${API_BASE}/admin/employees`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    })
+                ]);
+                
+                if (regionsRes.ok && locationsRes.ok && positionsRes.ok && employeesRes.ok) {
+                    regions = await regionsRes.json();
+                    locations = await locationsRes.json();
+                    positions = await positionsRes.json();
+                    employees = await employeesRes.json();
+                    
+                    // Update location counts for regions
+                    regions.forEach(region => {
+                        region.locationCount = locations.filter(loc => loc.region_id === region.id).length;
+                    });
+                    
+                    // Update employee counts (demo data)
+                    positions.forEach(position => {
+                        position.employeeCount = Math.floor(Math.random() * 3) + 1;
+                    });
+                    
+                    saveToLocalStorage();
+                    showToast('✅ Data berhasil dimuat dari server', 'success');
+                } else {
+                    throw new Error('API not available');
+                }
+            } catch (error) {
+                console.log('API not available, using localStorage data');
+                initializeData();
+                showToast('ℹ️ Menggunakan data lokal (server tidak tersedia)', 'info');
+            }
+        }
+
+        // Region functions
+        function addRegion() {
+            document.getElementById('regionModalTitle').innerHTML = '<i class="fas fa-map-marker-alt me-2"></i>Tambah Wilayah Kerja';
+            document.getElementById('regionForm').reset();
+            document.getElementById('regionId').value = '';
+            new bootstrap.Modal(document.getElementById('regionModal')).show();
+        }
+
+        function editRegion(id) {
+            const region = regions.find(r => r.id === id);
+            if (region) {
+                document.getElementById('regionModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Wilayah Kerja';
+                document.getElementById('regionId').value = region.id;
+                document.getElementById('regionName').value = region.name;
+                document.getElementById('regionCode').value = region.code;
+                new bootstrap.Modal(document.getElementById('regionModal')).show();
+            }
+        }
+
+        async function saveRegion() {
+            const id = document.getElementById('regionId').value;
+            const name = document.getElementById('regionName').value;
+            const code = document.getElementById('regionCode').value;
+
+            if (!name || !code) {
+                showToast('❌ Nama dan kode wilayah harus diisi!', 'danger');
+                return;
+            }
+
+            const regionData = { name, code };
+            
+            try {
+                let response;
+                if (id) {
+                    // Update existing
+                    response = await fetch(`${API_BASE}/admin/regions/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(regionData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch(`${API_BASE}/admin/regions`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(regionData)
+                    });
+                }
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showToast(`✅ Wilayah ${name} berhasil disimpan ke database!`, 'success');
+                    
+                    // Reload data from API
+                    await loadDataFromAPI();
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Server error');
+                }
+            } catch (error) {
+                console.log('API error, saving to localStorage:', error);
+                
+                // Fallback to localStorage
+                if (id) {
+                    // Update existing
+                    const index = regions.findIndex(r => r.id == id);
+                    if (index !== -1) {
+                        regions[index] = {...regions[index], name, code};
+                    }
+                } else {
+                    // Add new
+                    const newId = Math.max(...regions.map(r => r.id), 0) + 1;
+                    regions.push({
+                        id: newId,
+                        name,
+                        code,
+                        locationCount: 0,
+                        created_at: new Date().toISOString().split('T')[0]
+                    });
+                }
+                
+                saveToLocalStorage();
+                showToast(`✅ [LOKAL] Wilayah ${name} berhasil disimpan!`, 'info');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('regionModal')).hide();
+            loadRegions();
+        }
+
+        async function deleteRegion(id) {
+            const region = regions.find(r => r.id === id);
+            if (region && region.locationCount > 0) {
+                showToast('❌ Tidak dapat menghapus wilayah yang masih memiliki lokasi kerja!', 'danger');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin menghapus wilayah ini?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/admin/regions/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showToast('✅ Wilayah berhasil dihapus dari database!', 'success');
+                        await loadDataFromAPI();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Server error');
+                    }
+                } catch (error) {
+                    console.log('API error, deleting from localStorage:', error);
+                    
+                    // Fallback to localStorage
+                    regions = regions.filter(r => r.id !== id);
+                    saveToLocalStorage();
+                    showToast('✅ [LOKAL] Wilayah berhasil dihapus!', 'info');
+                }
+                
+                loadRegions();
+            }
+        }
+
+        function loadRegions() {
+            // Update location counts first
+            updateRegionLocationCounts();
+            
+            const tbody = document.getElementById('regionsTableBody');
+            tbody.innerHTML = regions.map(region => `
+                <tr>
+                    <td>${region.id}</td>
+                    <td><strong>${region.name}</strong></td>
+                    <td><span class="badge bg-primary">${region.code}</span></td>
+                    <td><span class="badge bg-info">${region.locationCount} Lokasi</span></td>
+                    <td>${region.created_at}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-warning" onclick="editRegion(${region.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteRegion(${region.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('regionCount').textContent = regions.length;
+        }
+
+        // Location functions
+        function addLocation() {
+            document.getElementById('locationModalTitle').innerHTML = '<i class="fas fa-building me-2"></i>Tambah Lokasi Kerja';
+            document.getElementById('locationForm').reset();
+            document.getElementById('locationId').value = '';
+            
+            // Load regions dropdown
+            loadRegionsDropdown();
+            
+            new bootstrap.Modal(document.getElementById('locationModal')).show();
+        }
+
+        function editLocation(id) {
+            const location = locations.find(l => l.id === id);
+            if (location) {
+                document.getElementById('locationModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Lokasi Kerja';
+                document.getElementById('locationId').value = location.id;
+                document.getElementById('locationName').value = location.name;
+                document.getElementById('locationAddress').value = location.address;
+                
+                // Load regions dropdown first, then set selected value
+                loadRegionsDropdown();
+                setTimeout(() => {
+                    document.getElementById('locationRegion').value = location.region_id;
+                }, 100);
+                
+                new bootstrap.Modal(document.getElementById('locationModal')).show();
+            }
+        }
+
+        async function saveLocation() {
+            const id = document.getElementById('locationId').value;
+            const name = document.getElementById('locationName').value;
+            const address = document.getElementById('locationAddress').value;
+            const region_id = parseInt(document.getElementById('locationRegion').value);
+
+            if (!name || !region_id) {
+                showToast('❌ Nama lokasi dan wilayah harus diisi!', 'danger');
+                return;
+            }
+
+            const locationData = { name, address, region_id };
+            
+            try {
+                let response;
+                if (id) {
+                    // Update existing
+                    response = await fetch(`${API_BASE}/admin/work-locations/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(locationData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch(`${API_BASE}/admin/work-locations`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(locationData)
+                    });
+                }
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showToast(`✅ Lokasi ${name} berhasil disimpan ke database!`, 'success');
+                    
+                    // Reload data from API
+                    await loadDataFromAPI();
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Server error');
+                }
+            } catch (error) {
+                console.log('API error, saving to localStorage:', error);
+                
+                // Fallback to localStorage
+                const region = regions.find(r => r.id === region_id);
+                if (!region) {
+                    showToast('❌ Wilayah tidak valid!', 'danger');
+                    return;
+                }
+
+                if (id) {
+                    // Update existing
+                    const index = locations.findIndex(l => l.id == id);
+                    if (index !== -1) {
+                        locations[index] = {...locations[index], name, address, region_id, region_name: region.name};
+                    }
+                } else {
+                    // Add new
+                    const newId = Math.max(...locations.map(l => l.id), 0) + 1;
+                    locations.push({
+                        id: newId,
+                        name,
+                        address,
+                        region_id,
+                        region_name: region.name,
+                        employeeCount: 0,
+                        created_at: new Date().toISOString().split('T')[0]
+                    });
+                    
+                    // Update region location count
+                    region.locationCount++;
+                }
+                
+                saveToLocalStorage();
+                showToast(`✅ [LOKAL] Lokasi ${name} berhasil disimpan!`, 'info');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('locationModal')).hide();
+            loadLocations();
+            loadRegions();
+        }
+
+        async function deleteLocation(id) {
+            const location = locations.find(l => l.id === id);
+            if (location && location.employeeCount > 0) {
+                showToast('❌ Tidak dapat menghapus lokasi yang masih memiliki karyawan!', 'danger');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin menghapus lokasi kerja ini?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/admin/work-locations/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showToast('✅ Lokasi kerja berhasil dihapus dari database!', 'success');
+                        await loadDataFromAPI();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Server error');
+                    }
+                } catch (error) {
+                    console.log('API error, deleting from localStorage:', error);
+                    
+                    // Fallback to localStorage
+                    const location = locations.find(l => l.id === id);
+                    if (location) {
+                        // Update region location count
+                        const region = regions.find(r => r.id === location.region_id);
+                        if (region) region.locationCount--;
+                    }
+                    
+                    locations = locations.filter(l => l.id !== id);
+                    saveToLocalStorage();
+                    showToast('✅ [LOKAL] Lokasi kerja berhasil dihapus!', 'info');
+                }
+                
+                loadLocations();
+                loadRegions();
+            }
+        }
+
+        // Load regions dropdown for location modal
+        function loadRegionsDropdown() {
+            const select = document.getElementById('locationRegion');
+            select.innerHTML = '<option value="">Pilih Wilayah</option>';
+            
+            regions.forEach(region => {
+                select.innerHTML += `<option value="${region.id}">${region.name} (${region.code})</option>`;
+            });
+        }
+
+        // Update location counts for regions
+        function updateRegionLocationCounts() {
+            regions.forEach(region => {
+                region.locationCount = locations.filter(loc => loc.region_id === region.id).length;
+            });
+        }
+
+        function loadLocations() {
+            const tbody = document.getElementById('locationsTableBody');
+            tbody.innerHTML = locations.map(location => `
+                <tr>
+                    <td>${location.id}</td>
+                    <td><strong>${location.name}</strong></td>
+                    <td>${location.address}</td>
+                    <td><span class="badge bg-primary">${location.region_name}</span></td>
+                    <td><span class="badge bg-success">${location.employeeCount} Karyawan</span></td>
+                    <td>${location.created_at}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-warning" onclick="editLocation(${location.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteLocation(${location.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('locationCount').textContent = locations.length;
+        }
+
+        // Position functions
+        function addPosition() {
+            document.getElementById('positionModalTitle').innerHTML = '<i class="fas fa-user-tie me-2"></i>Tambah Jabatan';
+            document.getElementById('positionForm').reset();
+            document.getElementById('positionId').value = '';
+            new bootstrap.Modal(document.getElementById('positionModal')).show();
+        }
+
+        function editPosition(id) {
+            const position = positions.find(p => p.id === id);
+            if (position) {
+                document.getElementById('positionModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Jabatan';
+                document.getElementById('positionId').value = position.id;
+                document.getElementById('positionName').value = position.name;
+                document.getElementById('positionLevel').value = position.level;
+                document.getElementById('positionApprovalLevel').value = position.approval_level;
+                new bootstrap.Modal(document.getElementById('positionModal')).show();
+            }
+        }
+
+        async function savePosition() {
+            const id = document.getElementById('positionId').value;
+            const name = document.getElementById('positionName').value;
+            const level = parseInt(document.getElementById('positionLevel').value);
+            const approval_level = parseInt(document.getElementById('positionApprovalLevel').value);
+
+            if (!name || !level || !approval_level) {
+                showToast('❌ Semua field harus diisi!', 'danger');
+                return;
+            }
+
+            const positionData = { name, level, approval_level };
+            
+            try {
+                let response;
+                if (id) {
+                    // Update existing
+                    response = await fetch(`${API_BASE}/admin/positions/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(positionData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch(`${API_BASE}/admin/positions`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(positionData)
+                    });
+                }
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showToast(`✅ Jabatan ${name} berhasil disimpan ke database!`, 'success');
+                    
+                    // Reload data from API
+                    await loadDataFromAPI();
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Server error');
+                }
+            } catch (error) {
+                console.log('API error, saving to localStorage:', error);
+                
+                // Fallback to localStorage
+                if (id) {
+                    // Update existing
+                    const index = positions.findIndex(p => p.id == id);
+                    if (index !== -1) {
+                        positions[index] = {...positions[index], name, level, approval_level};
+                    }
+                } else {
+                    // Add new
+                    const newId = Math.max(...positions.map(p => p.id), 0) + 1;
+                    positions.push({
+                        id: newId,
+                        name,
+                        level,
+                        approval_level,
+                        employeeCount: 0,
+                        created_at: new Date().toISOString().split('T')[0]
+                    });
+                }
+                
+                saveToLocalStorage();
+                showToast(`✅ [LOKAL] Jabatan ${name} berhasil disimpan!`, 'info');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
+            loadPositions();
+        }
+
+        function deletePosition(id) {
+            const position = positions.find(p => p.id === id);
+            if (position && position.employeeCount > 0) {
+                alert('Tidak dapat menghapus jabatan yang masih digunakan oleh karyawan!');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin menghapus jabatan ini?')) {
+                positions = positions.filter(p => p.id !== id);
+                loadPositions();
+                showToast('Jabatan berhasil dihapus!', 'success');
+            }
+        }
+
+        function loadPositions() {
+            const tbody = document.getElementById('positionsTableBody');
+            tbody.innerHTML = positions.map(position => `
+                <tr>
+                    <td>${position.id}</td>
+                    <td><strong>${position.name}</strong></td>
+                    <td><span class="badge bg-secondary">Level ${position.level}</span></td>
+                    <td><span class="badge ${position.approval_level === 5 ? 'bg-danger' : 'bg-info'}">Approval ${position.approval_level}</span></td>
+                    <td><span class="badge bg-success">${position.employeeCount} Karyawan</span></td>
+                    <td>${position.created_at}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-warning" onclick="editPosition(${position.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deletePosition(${position.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('positionCount').textContent = positions.length;
+        }
+
+        // ==========================================
+        // EMPLOYEE FUNCTIONS
+        // ==========================================
+
+        // Employee functions
+        function addEmployee() {
+            document.getElementById('employeeModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>Tambah Karyawan';
+            document.getElementById('employeeForm').reset();
+            document.getElementById('employeeId').value = '';
+            
+            // Load dropdown data
+            loadEmployeeDropdowns();
+            
+            new bootstrap.Modal(document.getElementById('employeeModal')).show();
+        }
+
+        function editEmployee(id) {
+            const employee = employees.find(e => e.id === id);
+            if (employee) {
+                document.getElementById('employeeModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Karyawan';
+                document.getElementById('employeeId').value = employee.id;
+                document.getElementById('employeeIdInput').value = employee.employee_id;
+                document.getElementById('employeeName').value = employee.name;
+                document.getElementById('employeeEmail').value = employee.email;
+                document.getElementById('employeePassword').value = ''; // Don't show password
+                document.getElementById('employeePosition').value = employee.position_id;
+                document.getElementById('employeeLocation').value = employee.work_location_id;
+                document.getElementById('employeeSupervisor').value = employee.supervisor_id || '';
+                document.getElementById('employeeStatus').value = employee.status;
+                
+                // Load dropdown data
+                loadEmployeeDropdowns();
+                
+                new bootstrap.Modal(document.getElementById('employeeModal')).show();
+            }
+        }
+
+        function viewEmployee(id) {
+            const employee = employees.find(e => e.id === id);
+            if (employee) {
+                const content = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-user me-2"></i>Informasi Pribadi</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>ID Karyawan:</strong> ${employee.employee_id}</p>
+                                    <p><strong>Nama:</strong> ${employee.name}</p>
+                                    <p><strong>Email:</strong> ${employee.email}</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="badge bg-${employee.status === 'active' ? 'success' : 'danger'}">
+                                            ${employee.status === 'active' ? 'Aktif' : 'Tidak Aktif'}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-briefcase me-2"></i>Informasi Pekerjaan</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Jabatan:</strong> ${employee.position_name}</p>
+                                    <p><strong>Lokasi Kerja:</strong> ${employee.location_name}</p>
+                                    <p><strong>Supervisor:</strong> ${employee.supervisor_name || 'Tidak ada'}</p>
+                                    <p><strong>Bergabung:</strong> ${employee.created_at}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('employeeDetailContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('employeeDetailModal')).show();
+            }
+        }
+
+        async function saveEmployee() {
+            const id = document.getElementById('employeeId').value;
+            const employeeData = {
+                employee_id: document.getElementById('employeeIdInput').value,
+                name: document.getElementById('employeeName').value,
+                email: document.getElementById('employeeEmail').value,
+                password: document.getElementById('employeePassword').value,
+                position_id: parseInt(document.getElementById('employeePosition').value),
+                work_location_id: parseInt(document.getElementById('employeeLocation').value),
+                supervisor_id: document.getElementById('employeeSupervisor').value ? parseInt(document.getElementById('employeeSupervisor').value) : null,
+                status: document.getElementById('employeeStatus').value
+            };
+
+            // Validation
+            if (!employeeData.employee_id || !employeeData.name || !employeeData.email || 
+                !employeeData.position_id || !employeeData.work_location_id) {
+                showToast('❌ Semua field wajib harus diisi!', 'danger');
+                return;
+            }
+
+            if (!id && (!employeeData.password || employeeData.password.length < 8)) {
+                showToast('❌ Password minimal 8 karakter untuk karyawan baru!', 'danger');
+                return;
+            }
+
+            try {
+                let response;
+                if (id) {
+                    // Update existing
+                    const updateData = {...employeeData};
+                    if (!updateData.password) delete updateData.password; // Don't update password if empty
+                    
+                    response = await fetch(`${API_BASE}/admin/employees/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch(`${API_BASE}/admin/employees`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(employeeData)
+                    });
+                }
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showToast(`✅ Karyawan ${employeeData.name} berhasil disimpan ke database!`, 'success');
+                    
+                    // Reload data from API
+                    await loadDataFromAPI();
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Server error');
+                }
+            } catch (error) {
+                console.log('API error, saving to localStorage:', error);
+                
+                // Fallback to localStorage
+                const position = positions.find(p => p.id === employeeData.position_id);
+                const location = locations.find(l => l.id === employeeData.work_location_id);
+                const supervisor = employees.find(e => e.id === employeeData.supervisor_id);
+                
+                if (id) {
+                    // Update existing
+                    const index = employees.findIndex(e => e.id == id);
+                    if (index !== -1) {
+                        employees[index] = {
+                            ...employees[index],
+                            ...employeeData,
+                            position_name: position?.name,
+                            location_name: location?.name,
+                            supervisor_name: supervisor?.name
+                        };
+                    }
+                } else {
+                    // Add new
+                    const newId = Math.max(...employees.map(e => e.id), 0) + 1;
+                    employees.push({
+                        id: newId,
+                        ...employeeData,
+                        position_name: position?.name,
+                        location_name: location?.name,
+                        supervisor_name: supervisor?.name,
+                        created_at: new Date().toISOString().split('T')[0]
+                    });
+                }
+                
+                saveToLocalStorage();
+                showToast(`✅ [LOKAL] Karyawan ${employeeData.name} berhasil disimpan!`, 'info');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('employeeModal')).hide();
+            loadEmployees();
+        }
+
+        async function deleteEmployee(id) {
+            const employee = employees.find(e => e.id === id);
+            if (!employee) return;
+
+            if (confirm(`Apakah Anda yakin ingin menghapus karyawan ${employee.name}?`)) {
+                try {
+                    const response = await fetch(`${API_BASE}/admin/employees/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showToast(`✅ Karyawan ${employee.name} berhasil dihapus dari database!`, 'success');
+                        await loadDataFromAPI();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Server error');
+                    }
+                } catch (error) {
+                    console.log('API error, deleting from localStorage:', error);
+                    
+                    // Fallback to localStorage
+                    employees = employees.filter(e => e.id !== id);
+                    saveToLocalStorage();
+                    showToast(`✅ [LOKAL] Karyawan ${employee.name} berhasil dihapus!`, 'info');
+                }
+                
+                loadEmployees();
+            }
+        }
+
+        function loadEmployees() {
+            const tbody = document.getElementById('employeesTableBody');
+            tbody.innerHTML = employees.map(employee => {
+                const positionBadgeClass = {
+                    'Administrator': 'bg-danger',
+                    'Director': 'bg-danger', 
+                    'Manager': 'bg-warning',
+                    'Supervisor': 'bg-info',
+                    'Staff': 'bg-secondary'
+                }[employee.position_name] || 'bg-secondary';
+                
+                const statusBadgeClass = employee.status === 'active' ? 'bg-success' : 'bg-danger';
+                const statusText = employee.status === 'active' ? 'Aktif' : 'Tidak Aktif';
+                
+                return `
+                    <tr>
+                        <td><strong>${employee.employee_id}</strong></td>
+                        <td>${employee.name}</td>
+                        <td>${employee.email}</td>
+                        <td><span class="badge ${positionBadgeClass}">${employee.position_name}</span></td>
+                        <td><span class="badge bg-primary">${employee.location_name}</span></td>
+                        <td><span class="badge ${employee.supervisor_name ? 'bg-info' : 'bg-secondary'}">${employee.supervisor_name || '-'}</span></td>
+                        <td><span class="badge ${statusBadgeClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-info" onclick="viewEmployee(${employee.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="editEmployee(${employee.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteEmployee(${employee.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            document.getElementById('employeeCount').textContent = employees.length;
+        }
+
+        function loadEmployeeDropdowns() {
+            // Load positions
+            const positionSelect = document.getElementById('employeePosition');
+            positionSelect.innerHTML = '<option value="">Pilih Jabatan</option>';
+            positions.forEach(position => {
+                positionSelect.innerHTML += `<option value="${position.id}">${position.name} (Level ${position.level})</option>`;
+            });
+
+            // Load locations
+            const locationSelect = document.getElementById('employeeLocation');
+            locationSelect.innerHTML = '<option value="">Pilih Lokasi Kerja</option>';
+            locations.forEach(location => {
+                locationSelect.innerHTML += `<option value="${location.id}">${location.name} (${location.region_name})</option>`;
+            });
+
+            // Load supervisors (employees with level 2 and above)
+            const supervisorSelect = document.getElementById('employeeSupervisor');
+            supervisorSelect.innerHTML = '<option value="">Pilih Supervisor (Opsional)</option>';
+            const supervisors = employees.filter(emp => {
+                const position = positions.find(p => p.id === emp.position_id);
+                return position && position.level >= 2;
+            });
+            supervisors.forEach(supervisor => {
+                supervisorSelect.innerHTML += `<option value="${supervisor.id}">${supervisor.name} (${supervisor.position_name})</option>`;
+            });
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toastHtml = `
+                <div class="toast align-items-center text-white bg-${type} border-0" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-check-circle me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElement = document.body.lastElementChild;
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            
+            setTimeout(() => {
+                toastElement.remove();
+            }, 5000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize data first
+            initializeData();
+            
+            // Load initial display
+            loadRegions();
+            loadLocations();
+            loadPositions();
+            loadEmployees();
+            
+            // Try to load from API in background
+            await loadDataFromAPI();
+            
+            // Refresh display with API data
+            loadRegions();
+            loadLocations();
+            loadPositions();
+            loadEmployees();
+        });
+    </script>
+</body>
+</html>

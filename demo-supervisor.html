@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Supervisor - Aplikasi Pengajuan Libur/Offsite</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand { font-weight: bold; }
+        .card-header { background-color: #f8f9fa; }
+        .status-pending { color: #ffc107; }
+        .status-approved { color: #198754; }
+        .status-rejected { color: #dc3545; }
+        .approval-level { font-size: 0.8em; color: #6c757d; }
+        .demo-badge { 
+            position: fixed; 
+            top: 10px; 
+            right: 10px; 
+            z-index: 1000;
+            background: linear-gradient(45deg, #28a745, #17a2b8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-badge">
+        <i class="fas fa-user-tie"></i> SUPERVISOR VIEW
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-calendar-alt"></i> Leave Request App</a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-tie"></i> Ahmad Wijaya (Supervisor)
+                </span>
+                <button class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- User Info -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Selamat datang, Ahmad Wijaya!</h5>
+                        <p class="mb-0">
+                            <strong>ID:</strong> SPV001 | 
+                            <strong>Jabatan:</strong> Supervisor | 
+                            <strong>Lokasi:</strong> Kantor Pusat Jakarta
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="my-requests-tab" data-bs-toggle="tab" data-bs-target="#my-requests" type="button">
+                    <i class="fas fa-list"></i> Pengajuan Saya
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="new-request-tab" data-bs-toggle="tab" data-bs-target="#new-request" type="button">
+                    <i class="fas fa-plus"></i> Pengajuan Baru
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="approvals-tab" data-bs-toggle="tab" data-bs-target="#approvals" type="button">
+                    <i class="fas fa-check-circle"></i> Persetujuan 
+                    <span class="badge bg-danger ms-1">2</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="mainTabContent">
+            <!-- My Requests Tab -->
+            <div class="tab-pane fade" id="my-requests">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list"></i> Daftar Pengajuan Saya</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-calendar-times"></i> Cuti/Libur
+                                        </h6>
+                                        <p class="card-text">
+                                            <strong>Periode:</strong> 25/12/2025 - 27/12/2025 (3 hari)<br>
+                                            <strong>Alasan:</strong> Liburan Natal bersama keluarga
+                                        </p>
+                                        <small class="text-muted">Diajukan: 20/10/2025 14:20</small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="badge bg-success fs-6">Disetujui</span>
+                                        <br><br>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> Detail
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Request Tab -->
+            <div class="tab-pane fade" id="new-request">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-plus"></i> Buat Pengajuan Baru</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="requestType" class="form-label">Jenis Pengajuan</label>
+                                        <select class="form-select" id="requestType" required>
+                                            <option value="">Pilih jenis</option>
+                                            <option value="leave">Cuti/Libur</option>
+                                            <option value="offsite">Offsite</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="startDate" class="form-label">Tanggal Mulai</label>
+                                        <input type="date" class="form-control" id="startDate" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="endDate" class="form-label">Tanggal Selesai</label>
+                                        <input type="date" class="form-control" id="endDate" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reason" class="form-label">Alasan</label>
+                                <textarea class="form-control" id="reason" rows="3" required placeholder="Masukkan alasan pengajuan..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="showDemoAlert()">
+                                <i class="fas fa-paper-plane"></i> Ajukan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvals Tab -->
+            <div class="tab-pane fade show active" id="approvals">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-check-circle"></i> Pengajuan Menunggu Persetujuan</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Pending Approval 1 -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-calendar-times"></i> Cuti/Libur - Dewi Lestari
+                                        </h6>
+                                        <p class="card-text">
+                                            <strong>ID Karyawan:</strong> STF001<br>
+                                            <strong>Jabatan:</strong> Staff<br>
+                                            <strong>Lokasi:</strong> Kantor Pusat Jakarta<br>
+                                            <strong>Periode:</strong> 01/11/2025 - 03/11/2025 (3 hari)<br>
+                                            <strong>Alasan:</strong> Liburan keluarga ke Bali
+                                        </p>
+                                        <small class="text-muted">
+                                            Diajukan: 23/10/2025 20:30 | Level Approval: 1
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="btn-group-vertical" role="group">
+                                            <button class="btn btn-success btn-sm" onclick="approveRequest('Dewi Lestari', 'approved')">
+                                                <i class="fas fa-check"></i> Setujui
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="approveRequest('Dewi Lestari', 'rejected')">
+                                                <i class="fas fa-times"></i> Tolak
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Approval 2 -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-map-marker-alt"></i> Offsite - Andi Pratama
+                                        </h6>
+                                        <p class="card-text">
+                                            <strong>ID Karyawan:</strong> STF002<br>
+                                            <strong>Jabatan:</strong> Staff<br>
+                                            <strong>Lokasi:</strong> Kantor Pusat Jakarta<br>
+                                            <strong>Periode:</strong> 28/10/2025 - 29/10/2025 (2 hari)<br>
+                                            <strong>Alasan:</strong> Meeting dengan klien di Surabaya
+                                        </p>
+                                        <small class="text-muted">
+                                            Diajukan: 23/10/2025 15:45 | Level Approval: 1
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="btn-group-vertical" role="group">
+                                            <button class="btn btn-success btn-sm" onclick="approveRequest('Andi Pratama', 'approved')">
+                                                <i class="fas fa-check"></i> Setujui
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="approveRequest('Andi Pratama', 'rejected')">
+                                                <i class="fas fa-times"></i> Tolak
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approval History -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-history"></i> Riwayat Approval</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Karyawan</th>
+                                        <th>Jenis</th>
+                                        <th>Periode</th>
+                                        <th>Status</th>
+                                        <th>Komentar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>22/10/2025</td>
+                                        <td>Sari Indah</td>
+                                        <td>Cuti/Libur</td>
+                                        <td>30/10 - 31/10</td>
+                                        <td><span class="badge bg-success">Disetujui</span></td>
+                                        <td>Approved untuk keperluan keluarga</td>
+                                    </tr>
+                                    <tr>
+                                        <td>20/10/2025</td>
+                                        <td>Budi Santoso</td>
+                                        <td>Offsite</td>
+                                        <td>25/10 - 26/10</td>
+                                        <td><span class="badge bg-success">Disetujui</span></td>
+                                        <td>Training penting untuk tim</td>
+                                    </tr>
+                                    <tr>
+                                        <td>18/10/2025</td>
+                                        <td>Maya Sari</td>
+                                        <td>Cuti/Libur</td>
+                                        <td>19/10 - 19/10</td>
+                                        <td><span class="badge bg-danger">Ditolak</span></td>
+                                        <td>Jadwal terlalu mendadak</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Info -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-user-tie"></i> Tampilan Supervisor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Fitur Supervisor:</h6>
+                                <ul>
+                                    <li>✅ Melihat pengajuan yang perlu disetujui</li>
+                                    <li>✅ Approve/reject dengan komentar</li>
+                                    <li>✅ Riwayat approval yang telah dilakukan</li>
+                                    <li>✅ Notifikasi pengajuan baru</li>
+                                    <li>✅ Dashboard approval statistics</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Alur Approval Berjenjang:</h6>
+                                <div class="approval-flow">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-primary me-2">1</span>
+                                        <strong>Supervisor</strong> (Level 1) - Ahmad Wijaya
+                                        <i class="fas fa-arrow-right mx-2 text-success"></i>
+                                        <span class="text-success">Anda di sini</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-secondary me-2">2</span>
+                                        <strong>Manager</strong> (Level 2) - Siti Rahayu
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-secondary me-2">3</span>
+                                        <strong>Director</strong> (Level 3) - Budi Santoso
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showDemoAlert() {
+            alert('Demo Mode: Pengajuan berhasil dibuat!\n\nSebagai Supervisor, pengajuan Anda akan langsung masuk ke Manager untuk approval.');
+        }
+
+        function approveRequest(employeeName, status) {
+            const action = status === 'approved' ? 'menyetujui' : 'menolak';
+            const comment = prompt(`Masukkan komentar untuk ${action} pengajuan ${employeeName} (opsional):`);
+            
+            if (comment !== null) {
+                alert(`Demo Mode: Pengajuan ${employeeName} berhasil di${status === 'approved' ? 'setujui' : 'tolak'}!\n\nKomentar: ${comment || 'Tidak ada komentar'}\n\n${status === 'approved' ? 'Pengajuan akan diteruskan ke Manager untuk approval selanjutnya.' : 'Pengajuan ditolak dan karyawan akan mendapat notifikasi.'}`);
+                
+                // Simulate removing the request from pending list
+                event.target.closest('.card').style.opacity = '0.5';
+                event.target.closest('.card').style.pointerEvents = 'none';
+                
+                // Update badge count
+                const badge = document.querySelector('.badge.bg-danger');
+                const currentCount = parseInt(badge.textContent);
+                if (currentCount > 1) {
+                    badge.textContent = currentCount - 1;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

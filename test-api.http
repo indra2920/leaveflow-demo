@@ -1,0 +1,247 @@
+# API Testing File
+# Use with REST Client extension in VS Code
+
+### Login as Staff
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "staff@company.com",
+  "password": "password123"
+}
+
+### Login as Supervisor  
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "supervisor@company.com", 
+  "password": "password123"
+}
+
+### Get My Profile (replace TOKEN with actual token from login)
+GET http://localhost:3000/api/employees/profile/me
+Authorization: Bearer TOKEN
+
+### Get My Requests
+GET http://localhost:3000/api/leave-requests/my-requests
+Authorization: Bearer TOKEN
+
+### Create New Leave Request
+POST http://localhost:3000/api/leave-requests
+Content-Type: application/json
+Authorization: Bearer TOKEN
+
+{
+  "type": "leave",
+  "start_date": "2025-11-01",
+  "end_date": "2025-11-03", 
+  "reason": "Liburan keluarga"
+}
+
+### Get Pending Approvals (for supervisor/manager)
+GET http://localhost:3000/api/leave-requests/pending-approvals
+Authorization: Bearer TOKEN
+
+### Approve Request (replace REQUEST_ID with actual ID)
+POST http://localhost:3000/api/approvals/REQUEST_ID/approve
+Content-Type: application/json
+Authorization: Bearer TOKEN
+
+{
+  "status": "approved",
+  "comments": "Disetujui"
+}
+
+### Reject Request
+POST http://localhost:3000/api/approvals/REQUEST_ID/approve
+Content-Type: application/json
+Authorization: Bearer TOKEN
+
+{
+  "status": "rejected", 
+  "comments": "Tidak dapat disetujui karena jadwal padat"
+}
+#
+## ==========================================
+### MASTER DATA API TESTING
+### ==========================================
+
+### Login as Admin first
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "password123"
+}
+
+### ==========================================
+### REGIONS API
+### ==========================================
+
+### Get all regions
+GET http://localhost:3000/api/admin/regions
+Authorization: Bearer {{token}}
+
+### Get single region
+GET http://localhost:3000/api/admin/regions/1
+Authorization: Bearer {{token}}
+
+### Create new region
+POST http://localhost:3000/api/admin/regions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Yogyakarta",
+  "code": "YGY"
+}
+
+### Update region
+PUT http://localhost:3000/api/admin/regions/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Jakarta Raya",
+  "code": "JKT"
+}
+
+### Delete region (will fail if has work locations)
+DELETE http://localhost:3000/api/admin/regions/5
+Authorization: Bearer {{token}}
+
+### ==========================================
+### WORK LOCATIONS API
+### ==========================================
+
+### Get all work locations
+GET http://localhost:3000/api/admin/work-locations
+Authorization: Bearer {{token}}
+
+### Get single work location
+GET http://localhost:3000/api/admin/work-locations/1
+Authorization: Bearer {{token}}
+
+### Create new work location
+POST http://localhost:3000/api/admin/work-locations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Cabang Yogyakarta",
+  "address": "Jl. Malioboro No. 15, Yogyakarta",
+  "region_id": 5
+}
+
+### Update work location
+PUT http://localhost:3000/api/admin/work-locations/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Kantor Pusat Jakarta - Updated",
+  "address": "Jl. Sudirman No. 1, Jakarta Pusat - Updated",
+  "region_id": 1
+}
+
+### Delete work location (will fail if has employees)
+DELETE http://localhost:3000/api/admin/work-locations/8
+Authorization: Bearer {{token}}
+
+### ==========================================
+### POSITIONS API
+### ==========================================
+
+### Get all positions
+GET http://localhost:3000/api/admin/positions
+Authorization: Bearer {{token}}
+
+### Get single position
+GET http://localhost:3000/api/admin/positions/1
+Authorization: Bearer {{token}}
+
+### Create new position
+POST http://localhost:3000/api/admin/positions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Senior Manager",
+  "level": 3,
+  "approval_level": 3
+}
+
+### Update position
+PUT http://localhost:3000/api/admin/positions/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Staff - Updated",
+  "level": 1,
+  "approval_level": 1
+}
+
+### Delete position (will fail if has employees)
+DELETE http://localhost:3000/api/admin/positions/6
+Authorization: Bearer {{token}}
+
+### ==========================================
+### MASTER DATA SUMMARY
+### ==========================================
+
+### Get master data summary
+GET http://localhost:3000/api/admin/master-data/summary
+Authorization: Bearer {{token}}
+
+### ==========================================
+### VALIDATION TESTS
+### ==========================================
+
+### Test duplicate region code
+POST http://localhost:3000/api/admin/regions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Jakarta Duplicate",
+  "code": "JKT"
+}
+
+### Test invalid region for work location
+POST http://localhost:3000/api/admin/work-locations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Invalid Location",
+  "address": "Test Address",
+  "region_id": 999
+}
+
+### Test missing required fields
+POST http://localhost:3000/api/admin/positions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Incomplete Position"
+}
+
+### ==========================================
+### BULK OPERATIONS (Future Enhancement)
+### ==========================================
+
+### Bulk create regions (not implemented yet)
+# POST http://localhost:3000/api/admin/regions/bulk
+# Authorization: Bearer {{token}}
+# Content-Type: application/json
+# 
+# {
+#   "regions": [
+#     {"name": "Bali", "code": "BAL"},
+#     {"name": "Makassar", "code": "MKS"}
+#   ]
+# }

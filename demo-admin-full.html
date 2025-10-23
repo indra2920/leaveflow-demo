@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaveFlow Admin - Full Featured Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-gradient: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            --info-gradient: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --hover-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #f8f4ff 0%, #e8f0fe 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--admin-gradient) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .demo-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--admin-gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: var(--card-shadow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: var(--admin-gradient);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .welcome-card {
+            background: var(--admin-gradient);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--admin-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.4);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(111, 66, 193, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stats-card.primary::before { background: var(--primary-gradient); }
+        .stats-card.success::before { background: var(--success-gradient); }
+        .stats-card.warning::before { background: var(--warning-gradient); }
+        .stats-card.danger::before { background: var(--danger-gradient); }
+        .stats-card.info::before { background: var(--info-gradient); }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--admin-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--admin-gradient);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+        }
+
+        .table-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table-modern thead {
+            background: var(--admin-gradient);
+            color: white;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: rgba(111, 66, 193, 0.05);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .activity-log-item {
+            border-left: 4px solid #6f42c1;
+            background: linear-gradient(135deg, rgba(111, 66, 193, 0.05) 0%, rgba(255, 255, 255, 0.8) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .activity-log-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-badge {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .welcome-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-badge">
+        <i class="fas fa-crown"></i> FULL ADMIN ACCESS
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-crown me-2"></i>LeaveFlow Admin Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="demo-admin-masterdata.html">
+                            <i class="fas fa-database me-1"></i>Master Data
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="me-3 text-end">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6f42c1&color=fff&size=40&rounded=true" 
+                             alt="Admin" class="rounded-circle me-2">
+                        <span class="fw-medium">Admin User</span>
+                        <small class="d-block text-white-50">Full Administrator</small>
+                    </div>
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-triangle text-warning me-2"></i>3 pending approvals</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-plus text-info me-2"></i>New employee registered</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-chart-line text-success me-2"></i>Monthly report ready</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div class="welcome-card fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">
+                        <i class="fas fa-tachometer-alt me-2"></i>Administrator Control Panel
+                    </h2>
+                    <p class="mb-3 opacity-75">
+                        <i class="fas fa-shield-alt me-2"></i>ADM001 • Full Administrator • Complete System Access
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-users me-2"></i>25 Active Users
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-clipboard-list me-2"></i>45 Total Requests
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-chart-line me-2"></i>98% System Uptime
+                        </div>
+                        <div class="glass-effect rounded-pill px-3 py-2">
+                            <i class="fas fa-database me-2"></i>1.2GB Data Storage
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="stats-card glass-effect">
+                        <div class="stats-number">100%</div>
+                        <div class="text-white-50">Admin Access</div>
+                        <div class="mt-2">
+                            <small class="text-white-50">All Features Enabled</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time System Status -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-heartbeat me-2"></i>System Status - Real Time</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle me-3" style="width: 12px; height: 12px;"></div>
+                                    <div>
+                                        <div class="fw-bold">Database</div>
+                                        <small class="text-success">Online - 2ms</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle me-3" style="width: 12px; height: 12px;"></div>
+                                    <div>
+                                        <div class="fw-bold">API Server</div>
+                                        <small class="text-success">Healthy - 15ms</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning rounded-circle me-3" style="width: 12px; height: 12px;"></div>
+                                    <div>
+                                        <div class="fw-bold">Email Service</div>
+                                        <small class="text-warning">Slow - 250ms</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle me-3" style="width: 12px; height: 12px;"></div>
+                                    <div>
+                                        <div class="fw-bold">Storage</div>
+                                        <small class="text-success">78% Available</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card primary fade-in" style="animation-delay: 0.1s">
+                    <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                    <div class="stats-number">25</div>
+                    <div class="text-muted">Total Users</div>
+                    <div class="mt-2">
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> +2 this week</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card info fade-in" style="animation-delay: 0.2s">
+                    <i class="fas fa-clipboard-list fa-2x text-info mb-3"></i>
+                    <div class="stats-number">45</div>
+                    <div class="text-muted">Total Requests</div>
+                    <div class="mt-2">
+                        <small class="text-info"><i class="fas fa-arrow-up"></i> +8 today</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card warning fade-in" style="animation-delay: 0.3s">
+                    <i class="fas fa-hourglass-half fa-2x text-warning mb-3"></i>
+                    <div class="stats-number">3</div>
+                    <div class="text-muted">Pending</div>
+                    <div class="mt-2">
+                        <small class="text-warning"><i class="fas fa-clock"></i> Urgent</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card success fade-in" style="animation-delay: 0.4s">
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <div class="stats-number">38</div>
+                    <div class="text-muted">Approved</div>
+                    <div class="mt-2">
+                        <small class="text-success"><i class="fas fa-percentage"></i> 95% rate</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card danger fade-in" style="animation-delay: 0.5s">
+                    <i class="fas fa-times-circle fa-2x text-danger mb-3"></i>
+                    <div class="stats-number">4</div>
+                    <div class="text-muted">Rejected</div>
+                    <div class="mt-2">
+                        <small class="text-danger"><i class="fas fa-percentage"></i> 5% rate</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <div class="stats-card primary fade-in" style="animation-delay: 0.6s">
+                    <i class="fas fa-building fa-2x text-primary mb-3"></i>
+                    <div class="stats-number">3</div>
+                    <div class="text-muted">Locations</div>
+                    <div class="mt-2">
+                        <small class="text-primary"><i class="fas fa-map-marker-alt"></i> Active</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bolt me-2"></i>Quick Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-primary w-100" onclick="showQuickApproval()">
+                                    <i class="fas fa-check-double me-2"></i>Bulk Approve
+                                </button>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-success w-100" onclick="addNewEmployee()">
+                                    <i class="fas fa-user-plus me-2"></i>Add Employee
+                                </button>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-info w-100" onclick="generateReport()">
+                                    <i class="fas fa-chart-bar me-2"></i>Generate Report
+                                </button>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-warning w-100" onclick="systemMaintenance()">
+                                    <i class="fas fa-tools me-2"></i>Maintenance
+                                </button>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-secondary w-100" onclick="window.location.href='demo-admin-masterdata.html'">
+                                    <i class="fas fa-database me-2"></i>Master Data
+                                </button>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                <button class="btn btn-dark w-100" onclick="showSystemSettings()">
+                                    <i class="fas fa-cogs me-2"></i>Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-activity me-2"></i>Recent System Activity</h5>
+                        <button class="btn btn-outline-light btn-sm" onclick="viewAllLogs()">
+                            <i class="fas fa-external-link-alt me-1"></i>View All
+                        </button>
+                    </div>
+                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div class="activity-log-item card mb-2">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-success me-2">LOGIN</span>
+                                        <strong>Dewi Lestari</strong> logged in
+                                    </div>
+                                    <small class="text-muted">2 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-log-item card mb-2">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-primary me-2">CREATE</span>
+                                        <strong>Ahmad Wijaya</strong> created new leave request
+                                    </div>
+                                    <small class="text-muted">5 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-log-item card mb-2">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-warning me-2">APPROVAL</span>
+                                        <strong>Siti Rahayu</strong> approved request #123
+                                    </div>
+                                    <small class="text-muted">10 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-log-item card mb-2">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-info me-2">ADMIN</span>
+                                        <strong>Admin User</strong> exported employee data
+                                    </div>
+                                    <small class="text-muted">15 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-log-item card mb-2">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-danger me-2">OVERRIDE</span>
+                                        <strong>Admin User</strong> overrode request #120
+                                    </div>
+                                    <small class="text-muted">20 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card fade-in" style="animation-delay: 0.2s">
+                    <div class="card-header">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Admin Alerts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>3 requests</strong> pending approval > 3 days
+                            <div class="mt-2">
+                                <button class="btn btn-warning btn-sm" onclick="handleUrgentApprovals()">
+                                    <i class="fas fa-bolt me-1"></i>Handle Now
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-database me-2"></i>
+                            <strong>Database backup</strong> scheduled for tonight
+                            <div class="mt-2">
+                                <button class="btn btn-info btn-sm" onclick="runBackupNow()">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-success">
+                            <i class="fas fa-chart-line me-2"></i>
+                            <strong>System performance</strong> is optimal
+                            <div class="mt-2">
+                                <small class="text-success">All services running smoothly</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="notification-toast" id="notificationContainer"></div>
+
+    <!-- Employee Modal -->
+    <div class="modal fade" id="employeeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeModalTitle">
+                        <i class="fas fa-user-plus me-2"></i>Tambah Karyawan Baru
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="employeeForm">
+                        <input type="hidden" id="employeeId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeIdInput" class="form-label">ID Karyawan</label>
+                                <input type="text" class="form-control" id="employeeIdInput" required>
+                                <div class="form-text">Contoh: STF001, MGR001</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeName" class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="employeeName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="employeeEmail" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employeePassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="employeePassword" required>
+                                <div class="form-text">Minimal 8 karakter</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeePosition" class="form-label">Jabatan</label>
+                                <select class="form-select" id="employeePosition" required>
+                                    <option value="">Pilih Jabatan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeLocation" class="form-label">Lokasi Kerja</label>
+                                <select class="form-select" id="employeeLocation" required>
+                                    <option value="">Pilih Lokasi Kerja</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employeeSupervisor" class="form-label">Supervisor</label>
+                                <select class="form-select" id="employeeSupervisor">
+                                    <option value="">Pilih Supervisor (Opsional)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" onclick="saveEmployee()">
+                        <i class="fas fa-save me-2"></i>Simpan Karyawan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Approval Modal -->
+    <div class="modal fade" id="bulkApprovalModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-double me-2"></i>Bulk Approval Tool
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-clock me-2"></i>Pending Requests</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                                            <th>Employee</th>
+                                            <th>Type</th>
+                                            <th>Dates</th>
+                                            <th>Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pendingRequestsTable">
+                                        <tr>
+                                            <td><input type="checkbox" class="request-checkbox" value="1"></td>
+                                            <td>Dewi Lestari</td>
+                                            <td><span class="badge bg-primary">Cuti</span></td>
+                                            <td>2025-01-15 to 2025-01-17</td>
+                                            <td>3 days</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="request-checkbox" value="2"></td>
+                                            <td>Ahmad Wijaya</td>
+                                            <td><span class="badge bg-info">Offsite</span></td>
+                                            <td>2025-01-20 to 2025-01-22</td>
+                                            <td>3 days</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="request-checkbox" value="3"></td>
+                                            <td>Siti Rahayu</td>
+                                            <td><span class="badge bg-primary">Cuti</span></td>
+                                            <td>2025-01-25 to 2025-01-26</td>
+                                            <td>2 days</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-comment me-2"></i>Bulk Action</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Action</label>
+                                <select class="form-select" id="bulkAction">
+                                    <option value="approve">Approve Selected</option>
+                                    <option value="reject">Reject Selected</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Comments (Optional)</label>
+                                <textarea class="form-control" id="bulkComments" rows="3" placeholder="Add comments for bulk action..."></textarea>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span id="selectedCount">0</span> requests selected for bulk action.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="executeBulkAction()">
+                        <i class="fas fa-check me-2"></i>Execute Bulk Action
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Generation Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-bar me-2"></i>Generate Reports
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-file-alt me-2"></i>Report Types</h6>
+                            <div class="list-group">
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-1" type="radio" name="reportType" value="employee">
+                                    Employee Report
+                                </label>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-1" type="radio" name="reportType" value="leave" checked>
+                                    Leave Requests Report
+                                </label>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-1" type="radio" name="reportType" value="approval">
+                                    Approval Statistics
+                                </label>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-1" type="radio" name="reportType" value="activity">
+                                    Activity Log Report
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar me-2"></i>Date Range</h6>
+                            <div class="mb-3">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control" id="reportFromDate">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control" id="reportToDate">
+                            </div>
+                            <h6><i class="fas fa-download me-2"></i>Format</h6>
+                            <div class="mb-3">
+                                <select class="form-select" id="reportFormat">
+                                    <option value="pdf">PDF Report</option>
+                                    <option value="excel">Excel Spreadsheet</option>
+                                    <option value="csv">CSV Data</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="generateSelectedReport()">
+                        <i class="fas fa-download me-2"></i>Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Maintenance Modal -->
+    <div class="modal fade" id="maintenanceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-tools me-2"></i>System Maintenance
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-database me-2"></i>Database Operations</h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="runDatabaseCleanup()">
+                                    <i class="fas fa-broom me-2"></i>Database Cleanup
+                                </button>
+                                <button class="btn btn-outline-success" onclick="runBackupNow()">
+                                    <i class="fas fa-save me-2"></i>Create Backup
+                                </button>
+                                <button class="btn btn-outline-info" onclick="optimizeDatabase()">
+                                    <i class="fas fa-rocket me-2"></i>Optimize Database
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-cogs me-2"></i>System Operations</h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-warning" onclick="clearSystemCache()">
+                                    <i class="fas fa-trash me-2"></i>Clear Cache
+                                </button>
+                                <button class="btn btn-outline-info" onclick="checkSystemHealth()">
+                                    <i class="fas fa-heartbeat me-2"></i>System Health Check
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="viewSystemLogs()">
+                                    <i class="fas fa-file-alt me-2"></i>View System Logs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h6>
+                            <div class="alert alert-warning">
+                                <strong>Warning:</strong> These operations can affect system performance and should be used carefully.
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-danger" onclick="resetSystemSettings()">
+                                    <i class="fas fa-undo me-2"></i>Reset System Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-cogs me-2"></i>System Settings
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar-alt me-2"></i>Leave Policies</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Maximum Leave Days per Year</label>
+                                <input type="number" class="form-control" id="maxLeaveDays" value="20">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Maximum Sick Days per Year</label>
+                                <input type="number" class="form-control" id="maxSickDays" value="12">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Minimum Notice Days</label>
+                                <input type="number" class="form-control" id="minNoticeDays" value="3">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-check-circle me-2"></i>Approval Settings</h6>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="autoApproval">
+                                    <label class="form-check-label" for="autoApproval">
+                                        Enable Auto-approval for 1-day requests
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                    <label class="form-check-label" for="emailNotifications">
+                                        Send Email Notifications
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                    <label class="form-check-label" for="smsNotifications">
+                                        Send SMS Notifications
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt me-2"></i>Security Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Session Timeout (minutes)</label>
+                                <input type="number" class="form-control" id="sessionTimeout" value="60">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="requirePasswordChange">
+                                    <label class="form-check-label" for="requirePasswordChange">
+                                        Require Password Change Every 90 Days
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-wrench me-2"></i>System Preferences</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Default Language</label>
+                                <select class="form-select" id="defaultLanguage">
+                                    <option value="id" selected>Bahasa Indonesia</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date Format</label>
+                                <select class="form-select" id="dateFormat">
+                                    <option value="dd/mm/yyyy" selected>DD/MM/YYYY</option>
+                                    <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                    <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="saveSystemSettings()">
+                        <i class="fas fa-save me-2"></i>Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Demo Functions
+        function showQuickApproval() {
+            // Show bulk approval modal
+            new bootstrap.Modal(document.getElementById('bulkApprovalModal')).show();
+            loadPendingRequests();
+        }
+
+        function addNewEmployee() {
+            // Reset form
+            document.getElementById('employeeForm').reset();
+            document.getElementById('employeeId').value = '';
+            document.getElementById('employeeModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>Tambah Karyawan Baru';
+            
+            // Load dropdown data
+            loadRegionsForEmployee();
+            loadPositionsForEmployee();
+            
+            // Show modal
+            new bootstrap.Modal(document.getElementById('employeeModal')).show();
+        }
+
+        function generateReport() {
+            // Show report generation modal
+            new bootstrap.Modal(document.getElementById('reportModal')).show();
+        }
+
+        function systemMaintenance() {
+            // Show system maintenance modal
+            new bootstrap.Modal(document.getElementById('maintenanceModal')).show();
+        }
+
+        function showSystemSettings() {
+            // Show system settings modal
+            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+            loadSystemSettings();
+        }
+
+        // Bulk Approval Functions
+        function loadPendingRequests() {
+            // This would normally load from API
+            updateSelectedCount();
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.request-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.request-checkbox:checked');
+            document.getElementById('selectedCount').textContent = checkboxes.length;
+        }
+
+        function executeBulkAction() {
+            const selectedRequests = document.querySelectorAll('.request-checkbox:checked');
+            const action = document.getElementById('bulkAction').value;
+            const comments = document.getElementById('bulkComments').value;
+            
+            if (selectedRequests.length === 0) {
+                showNotification('❌ Please select at least one request', 'danger');
+                return;
+            }
+            
+            const actionText = action === 'approve' ? 'approved' : 'rejected';
+            showNotification(`🚀 Processing ${selectedRequests.length} requests...`, 'info');
+            
+            setTimeout(() => {
+                showNotification(`✅ ${selectedRequests.length} requests ${actionText} successfully!`, 'success');
+                bootstrap.Modal.getInstance(document.getElementById('bulkApprovalModal')).hide();
+            }, 2000);
+        }
+
+        // Report Generation Functions
+        function generateSelectedReport() {
+            const reportType = document.querySelector('input[name="reportType"]:checked').value;
+            const fromDate = document.getElementById('reportFromDate').value;
+            const toDate = document.getElementById('reportToDate').value;
+            const format = document.getElementById('reportFormat').value;
+            
+            if (!fromDate || !toDate) {
+                showNotification('❌ Please select date range', 'danger');
+                return;
+            }
+            
+            showNotification(`📊 Generating ${reportType} report in ${format.toUpperCase()} format...`, 'info');
+            
+            setTimeout(() => {
+                showNotification(`✅ Report generated successfully! Download started.`, 'success');
+                bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+                
+                // Simulate file download
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = `${reportType}_report_${fromDate}_to_${toDate}.${format}`;
+                link.click();
+            }, 3000);
+        }
+
+        // System Maintenance Functions
+        function runDatabaseCleanup() {
+            showNotification('🧹 Starting database cleanup...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Database cleanup completed!', 'success');
+            }, 3000);
+        }
+
+        function runBackupNow() {
+            showNotification('💾 Starting system backup...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Backup completed successfully!', 'success');
+            }, 4000);
+        }
+
+        function optimizeDatabase() {
+            showNotification('🚀 Optimizing database...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Database optimization completed!', 'success');
+            }, 2500);
+        }
+
+        function clearSystemCache() {
+            showNotification('🗑️ Clearing system cache...', 'info');
+            setTimeout(() => {
+                showNotification('✅ System cache cleared!', 'success');
+            }, 1500);
+        }
+
+        function checkSystemHealth() {
+            showNotification('💓 Running system health check...', 'info');
+            setTimeout(() => {
+                showNotification('✅ System health check completed - All systems operational!', 'success');
+            }, 2000);
+        }
+
+        function viewSystemLogs() {
+            showNotification('📋 Opening system logs...', 'info');
+            // This would normally open a new window or modal with logs
+        }
+
+        function resetSystemSettings() {
+            if (confirm('Are you sure you want to reset all system settings to default? This action cannot be undone.')) {
+                showNotification('⚠️ Resetting system settings...', 'warning');
+                setTimeout(() => {
+                    showNotification('✅ System settings reset to default!', 'success');
+                    loadSystemSettings(); // Reload default settings
+                }, 2000);
+            }
+        }
+
+        // System Settings Functions
+        function loadSystemSettings() {
+            // Load current settings from localStorage or API
+            const settings = JSON.parse(localStorage.getItem('systemSettings') || '{}');
+            
+            document.getElementById('maxLeaveDays').value = settings.maxLeaveDays || 20;
+            document.getElementById('maxSickDays').value = settings.maxSickDays || 12;
+            document.getElementById('minNoticeDays').value = settings.minNoticeDays || 3;
+            document.getElementById('autoApproval').checked = settings.autoApproval || false;
+            document.getElementById('emailNotifications').checked = settings.emailNotifications !== false;
+            document.getElementById('smsNotifications').checked = settings.smsNotifications || false;
+            document.getElementById('sessionTimeout').value = settings.sessionTimeout || 60;
+            document.getElementById('requirePasswordChange').checked = settings.requirePasswordChange || false;
+            document.getElementById('defaultLanguage').value = settings.defaultLanguage || 'id';
+            document.getElementById('dateFormat').value = settings.dateFormat || 'dd/mm/yyyy';
+        }
+
+        function saveSystemSettings() {
+            const settings = {
+                maxLeaveDays: parseInt(document.getElementById('maxLeaveDays').value),
+                maxSickDays: parseInt(document.getElementById('maxSickDays').value),
+                minNoticeDays: parseInt(document.getElementById('minNoticeDays').value),
+                autoApproval: document.getElementById('autoApproval').checked,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                smsNotifications: document.getElementById('smsNotifications').checked,
+                sessionTimeout: parseInt(document.getElementById('sessionTimeout').value),
+                requirePasswordChange: document.getElementById('requirePasswordChange').checked,
+                defaultLanguage: document.getElementById('defaultLanguage').value,
+                dateFormat: document.getElementById('dateFormat').value
+            };
+            
+            // Save to localStorage (in real app, this would be API call)
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+            
+            showNotification('✅ System settings saved successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+        }
+
+        function viewAllLogs() {
+            showNotification('📋 Opening complete activity logs...', 'info');
+        }
+
+        function handleUrgentApprovals() {
+            showNotification('⚡ Processing urgent approvals...', 'warning');
+            setTimeout(() => {
+                showNotification('✅ All urgent requests processed!', 'success');
+            }, 2000);
+        }
+
+        function runBackupNow() {
+            showNotification('💾 Starting system backup...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Backup completed successfully!', 'success');
+            }, 4000);
+        }
+
+        function showNotification(message, type) {
+            const container = document.getElementById('notificationContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+
+        // API Configuration
+        const API_BASE = 'http://localhost:3000/api';
+        let authToken = localStorage.getItem('authToken') || 'demo-token';
+
+        // Load dropdown data for employee form
+        async function loadRegionsForEmployee() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/work-locations`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const locations = await response.json();
+                    const select = document.getElementById('employeeLocation');
+                    select.innerHTML = '<option value="">Pilih Lokasi Kerja</option>';
+                    
+                    locations.forEach(location => {
+                        select.innerHTML += `<option value="${location.id}">${location.name} (${location.region_name})</option>`;
+                    });
+                } else {
+                    loadDemoLocations();
+                }
+            } catch (error) {
+                console.log('Using demo data for locations');
+                loadDemoLocations();
+            }
+        }
+
+        async function loadPositionsForEmployee() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/positions`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const positions = await response.json();
+                    const select = document.getElementById('employeePosition');
+                    select.innerHTML = '<option value="">Pilih Jabatan</option>';
+                    
+                    positions.forEach(position => {
+                        select.innerHTML += `<option value="${position.id}">${position.name} (Level ${position.level})</option>`;
+                    });
+                } else {
+                    loadDemoPositions();
+                }
+            } catch (error) {
+                console.log('Using demo data for positions');
+                loadDemoPositions();
+            }
+        }
+
+        async function loadSupervisorsForEmployee() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/employees`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const employees = await response.json();
+                    const select = document.getElementById('employeeSupervisor');
+                    select.innerHTML = '<option value="">Pilih Supervisor (Opsional)</option>';
+                    
+                    const supervisors = employees.filter(emp => emp.position_level >= 2);
+                    supervisors.forEach(supervisor => {
+                        select.innerHTML += `<option value="${supervisor.id}">${supervisor.name} (${supervisor.position_name})</option>`;
+                    });
+                } else {
+                    loadDemoSupervisors();
+                }
+            } catch (error) {
+                console.log('Using demo data for supervisors');
+                loadDemoSupervisors();
+            }
+        }
+
+        // Demo data fallbacks
+        function loadDemoLocations() {
+            const select = document.getElementById('employeeLocation');
+            select.innerHTML = `
+                <option value="">Pilih Lokasi Kerja</option>
+                <option value="1">Kantor Pusat Jakarta (Jakarta)</option>
+                <option value="2">Cabang Jakarta Selatan (Jakarta)</option>
+                <option value="3">Cabang Jakarta Utara (Jakarta)</option>
+                <option value="4">Cabang Bandung (Bandung)</option>
+                <option value="5">Cabang Bandung Timur (Bandung)</option>
+                <option value="6">Cabang Surabaya (Surabaya)</option>
+                <option value="7">Cabang Surabaya Barat (Surabaya)</option>
+                <option value="8">Cabang Medan (Medan)</option>
+            `;
+        }
+
+        function loadDemoPositions() {
+            const select = document.getElementById('employeePosition');
+            select.innerHTML = `
+                <option value="">Pilih Jabatan</option>
+                <option value="1">Staff (Level 1)</option>
+                <option value="2">Supervisor (Level 2)</option>
+                <option value="3">Manager (Level 3)</option>
+                <option value="4">Director (Level 4)</option>
+                <option value="5">Administrator (Level 5)</option>
+            `;
+        }
+
+        function loadDemoSupervisors() {
+            const select = document.getElementById('employeeSupervisor');
+            select.innerHTML = `
+                <option value="">Pilih Supervisor (Opsional)</option>
+                <option value="2">Siti Rahayu (Manager)</option>
+                <option value="3">Ahmad Wijaya (Supervisor)</option>
+                <option value="1">Budi Santoso (Director)</option>
+            `;
+        }
+
+        // Save employee function
+        async function saveEmployee() {
+            const employeeData = {
+                employee_id: document.getElementById('employeeIdInput').value,
+                name: document.getElementById('employeeName').value,
+                email: document.getElementById('employeeEmail').value,
+                password: document.getElementById('employeePassword').value,
+                position_id: parseInt(document.getElementById('employeePosition').value),
+                work_location_id: parseInt(document.getElementById('employeeLocation').value),
+                supervisor_id: document.getElementById('employeeSupervisor').value ? parseInt(document.getElementById('employeeSupervisor').value) : null
+            };
+
+            // Validation
+            if (!employeeData.employee_id || !employeeData.name || !employeeData.email || 
+                !employeeData.password || !employeeData.position_id || !employeeData.work_location_id) {
+                showNotification('❌ Semua field wajib harus diisi!', 'danger');
+                return;
+            }
+
+            if (employeeData.password.length < 8) {
+                showNotification('❌ Password minimal 8 karakter!', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/employees`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(employeeData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification(`✅ Karyawan ${employeeData.name} berhasil ditambahkan!`, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('employeeModal')).hide();
+                } else {
+                    const error = await response.json();
+                    showNotification(`❌ Error: ${error.error || 'Gagal menambahkan karyawan'}`, 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving employee:', error);
+                // Demo mode - simulate success
+                showNotification(`✅ [DEMO] Karyawan ${employeeData.name} berhasil ditambahkan!`, 'info');
+                bootstrap.Modal.getInstance(document.getElementById('employeeModal')).hide();
+                
+                // Store in localStorage for demo
+                const demoEmployees = JSON.parse(localStorage.getItem('demoEmployees') || '[]');
+                demoEmployees.push({
+                    ...employeeData,
+                    id: Date.now(),
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('demoEmployees', JSON.stringify(demoEmployees));
+            }
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('👑 Welcome to LeaveFlow Admin Pro - All features enabled!', 'success');
+            }, 1000);
+            
+            // Setup modal event listeners
+            const employeeModal = document.getElementById('employeeModal');
+            if (employeeModal) {
+                employeeModal.addEventListener('show.bs.modal', function() {
+                    loadRegionsForEmployee();
+                    loadPositionsForEmployee();
+                });
+                
+                // Load supervisors when position changes
+                const positionSelect = document.getElementById('employeePosition');
+                if (positionSelect) {
+                    positionSelect.addEventListener('change', function() {
+                        if (this.value) {
+                            loadSupervisorsForEmployee();
+                        }
+                    });
+                }
+            }
+            
+            // Add event listeners for bulk approval checkboxes
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('request-checkbox')) {
+                    updateSelectedCount();
+                }
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                const actions = [
+                    'New login detected',
+                    'Request approved',
+                    'System backup completed',
+                    'New employee registered',
+                    'Report generated'
+                ];
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                
+                if (Math.random() > 0.7) { // 30% chance
+                    showNotification(`🔔 ${randomAction}`, 'info');
+                }
+            }, 10000); // Every 10 seconds
+        });
+    </script>
+</body>
+</html>
