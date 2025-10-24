@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeaveFlow Admin - Master Data Management</title>
+    <title>LeaveFlow - Master Data Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -31,59 +31,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .page-header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 30px 0;
-            margin-bottom: 30px;
-            border-radius: 0 0 25px 25px;
-            box-shadow: var(--card-shadow);
-        }
-
-        .nav-tabs {
-            border: none;
-            background: white;
-            border-radius: 15px;
-            padding: 10px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            border-radius: 10px;
-            color: #6c757d;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-            padding: 15px 25px;
-        }
-
-        .nav-tabs .nav-link.active {
-            background: var(--admin-gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
-        }
-
-        .nav-tabs .nav-link:hover:not(.active) {
-            background: rgba(111, 66, 193, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .toolbar {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--card-shadow);
-        }
-
         .card {
             border: none;
             border-radius: 20px;
@@ -104,53 +51,43 @@
             padding: 20px 25px;
         }
 
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            color: #6c757d;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--admin-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+
         .btn {
             border-radius: 10px;
             font-weight: 500;
             transition: all 0.3s ease;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn-primary {
             background: var(--primary-gradient);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: none;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
-        }
-
-        .btn-danger {
-            background: var(--danger-gradient);
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-        }
-
-        .btn-warning {
-            background: var(--warning-gradient);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .table {
@@ -163,44 +100,22 @@
             color: white;
             border: none;
             font-weight: 600;
-            padding: 15px;
         }
 
-        .table tbody tr:hover {
-            background-color: rgba(102, 126, 234, 0.05);
-        }
-
-        .table tbody td {
-            padding: 15px;
-            vertical-align: middle;
-        }
-
-        .badge {
-            padding: 8px 12px;
+        .modal-content {
             border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.85rem;
+            border: none;
         }
 
-        .badge-primary {
+        .modal-header {
             background: var(--primary-gradient);
             color: white;
-        }
-
-        .badge-success {
-            background: var(--success-gradient);
-            color: white;
-        }
-
-        .badge-warning {
-            background: var(--warning-gradient);
-            color: white;
+            border-radius: 20px 20px 0 0;
         }
 
         .form-control, .form-select {
-            border: 2px solid #e9ecef;
             border-radius: 10px;
-            padding: 12px 15px;
+            border: 2px solid #e9ecef;
             transition: all 0.3s ease;
         }
 
@@ -208,89 +123,9 @@
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-            box-shadow: var(--hover-shadow);
-        }
-
-        .modal-header {
-            background: var(--primary-gradient);
-            color: white;
-            border-radius: 20px 20px 0 0;
-            border: none;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .dependency-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        .search-highlight {
-            background-color: yellow;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .loading-spinner i {
-            font-size: 2rem;
-            color: #667eea;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .toolbar {
-                padding: 15px;
-            }
-            
-            .nav-tabs .nav-link {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .table-responsive {
-                border-radius: 15px;
-            }
-        }
     </style>
-</head>
-<body>
+</head><bo
+dy>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
@@ -308,51 +143,27 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-2">
-                        <i class="fas fa-cogs me-3"></i>Master Data Management
-                    </h1>
-                    <p class="mb-0 opacity-75">
-                        Kelola data master: Wilayah Kerja, Lokasi Kerja, dan Jabatan
-                    </p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button class="btn btn-outline-light" onclick="exportAllData()">
-                            <i class="fas fa-download me-2"></i>Export
-                        </button>
-                        <button class="btn btn-outline-light" onclick="importData()">
-                            <i class="fas fa-upload me-2"></i>Import
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid">
+    <div class="container-fluid mt-4">
         <!-- Navigation Tabs -->
-        <ul class="nav nav-tabs" id="masterDataTabs" role="tablist">
+        <ul class="nav nav-tabs mb-4" id="masterDataTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="regions-tab" data-bs-toggle="tab" data-bs-target="#regions" type="button">
-                    <i class="fas fa-globe-americas me-2"></i>Wilayah Kerja
-                    <span class="badge badge-primary ms-2" id="regionsCount">0</span>
+                    <i class="fas fa-globe me-2"></i>Wilayah Kerja
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button">
                     <i class="fas fa-map-marker-alt me-2"></i>Lokasi Kerja
-                    <span class="badge badge-success ms-2" id="locationsCount">0</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="positions-tab" data-bs-toggle="tab" data-bs-target="#positions" type="button">
                     <i class="fas fa-sitemap me-2"></i>Jabatan
-                    <span class="badge badge-warning ms-2" id="positionsCount">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button">
+                    <i class="fas fa-cog me-2"></i>Pengaturan
                 </button>
             </li>
         </ul>
@@ -360,40 +171,14 @@
         <div class="tab-content" id="masterDataTabContent">
             <!-- Regions Tab -->
             <div class="tab-pane fade show active" id="regions">
-                <!-- Toolbar -->
-                <div class="toolbar">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" class="form-control" id="regionsSearch" placeholder="Cari wilayah kerja...">
-                            </div>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-primary" onclick="showAddRegionModal()">
-                                    <i class="fas fa-plus me-2"></i>Tambah Wilayah
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="refreshRegions()">
-                                    <i class="fas fa-sync me-2"></i>Refresh
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Regions Table -->
                 <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-globe-americas me-2"></i>Daftar Wilayah Kerja</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-globe me-2"></i>Wilayah Kerja</h5>
+                        <button class="btn btn-light" onclick="showRegionModal()">
+                            <i class="fas fa-plus me-2"></i>Tambah Wilayah
+                        </button>
                     </div>
                     <div class="card-body">
-                        <div class="loading-spinner" id="regionsLoading">
-                            <i class="fas fa-spinner"></i>
-                            <p class="mt-2">Loading data...</p>
-                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover" id="regionsTable">
                                 <thead>
@@ -402,22 +187,11 @@
                                         <th>Nama Wilayah</th>
                                         <th>Deskripsi</th>
                                         <th>Jumlah Lokasi</th>
-                                        <th>Dibuat</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="regionsTableBody">
-                                    <!-- Dynamic content -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
-                        </div>
-                        <div class="empty-state" id="regionsEmpty" style="display: none;">
-                            <i class="fas fa-globe-americas"></i>
-                            <h4>Belum Ada Wilayah Kerja</h4>
-                            <p>Mulai dengan menambahkan wilayah kerja pertama untuk perusahaan Anda.</p>
-                            <button class="btn btn-primary" onclick="showAddRegionModal()">
-                                <i class="fas fa-plus me-2"></i>Tambah Wilayah Pertama
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -425,45 +199,14 @@
 
             <!-- Locations Tab -->
             <div class="tab-pane fade" id="locations">
-                <!-- Toolbar -->
-                <div class="toolbar">
-                    <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" class="form-control" id="locationsSearch" placeholder="Cari lokasi kerja...">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="locationsRegionFilter">
-                                <option value="">Semua Wilayah</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-success" onclick="showAddLocationModal()">
-                                    <i class="fas fa-plus me-2"></i>Tambah Lokasi
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="refreshLocations()">
-                                    <i class="fas fa-sync me-2"></i>Refresh
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Locations Table -->
                 <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-map-marker-alt me-2"></i>Daftar Lokasi Kerja</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-map-marker-alt me-2"></i>Lokasi Kerja</h5>
+                        <button class="btn btn-light" onclick="showLocationModal()">
+                            <i class="fas fa-plus me-2"></i>Tambah Lokasi
+                        </button>
                     </div>
                     <div class="card-body">
-                        <div class="loading-spinner" id="locationsLoading">
-                            <i class="fas fa-spinner"></i>
-                            <p class="mt-2">Loading data...</p>
-                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover" id="locationsTable">
                                 <thead>
@@ -472,22 +215,11 @@
                                         <th>Alamat</th>
                                         <th>Wilayah</th>
                                         <th>Jumlah Karyawan</th>
-                                        <th>Dibuat</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="locationsTableBody">
-                                    <!-- Dynamic content -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
-                        </div>
-                        <div class="empty-state" id="locationsEmpty" style="display: none;">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <h4>Belum Ada Lokasi Kerja</h4>
-                            <p>Tambahkan lokasi kerja untuk setiap wilayah yang sudah dibuat.</p>
-                            <button class="btn btn-success" onclick="showAddLocationModal()">
-                                <i class="fas fa-plus me-2"></i>Tambah Lokasi Pertama
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -495,90 +227,219 @@
 
             <!-- Positions Tab -->
             <div class="tab-pane fade" id="positions">
-                <!-- Toolbar -->
-                <div class="toolbar">
-                    <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" class="form-control" id="positionsSearch" placeholder="Cari jabatan...">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="positionsLevelFilter">
-                                <option value="">Semua Level</option>
-                                <option value="1">Level 1 - Staff</option>
-                                <option value="2">Level 2 - Supervisor</option>
-                                <option value="3">Level 3 - Manager</option>
-                                <option value="4">Level 4 - Director</option>
-                                <option value="5">Level 5 - Administrator</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-warning" onclick="showAddPositionModal()">
-                                    <i class="fas fa-plus me-2"></i>Tambah Jabatan
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="refreshPositions()">
-                                    <i class="fas fa-sync me-2"></i>Refresh
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Positions Table -->
                 <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-sitemap me-2"></i>Daftar Jabatan</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-sitemap me-2"></i>Jabatan</h5>
+                        <button class="btn btn-light" onclick="showPositionModal()">
+                            <i class="fas fa-plus me-2"></i>Tambah Jabatan
+                        </button>
                     </div>
                     <div class="card-body">
-                        <div class="loading-spinner" id="positionsLoading">
-                            <i class="fas fa-spinner"></i>
-                            <p class="mt-2">Loading data...</p>
-                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover" id="positionsTable">
                                 <thead>
                                     <tr>
-                                        <th>Nama Jabatan</th>
                                         <th>Level</th>
-                                        <th>Level Approval</th>
+                                        <th>Nama Jabatan</th>
                                         <th>Deskripsi</th>
+                                        <th>Level Approval</th>
                                         <th>Jumlah Karyawan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="positionsTableBody">
-                                    <!-- Dynamic content -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
-                        <div class="empty-state" id="positionsEmpty" style="display: none;">
-                            <i class="fas fa-sitemap"></i>
-                            <h4>Belum Ada Jabatan</h4>
-                            <p>Buat struktur jabatan untuk mengatur hierarki organisasi.</p>
-                            <button class="btn btn-warning" onclick="showAddPositionModal()">
-                                <i class="fas fa-plus me-2"></i>Tambah Jabatan Pertama
-                            </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="settings">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-building me-2"></i>Informasi Perusahaan</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="companyForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nama Perusahaan</label>
+                                        <input type="text" class="form-control" id="companyName">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Alamat</label>
+                                        <textarea class="form-control" id="companyAddress" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Telepon</label>
+                                        <input type="text" class="form-control" id="companyPhone">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="companyEmail">
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="saveCompanySettings()">
+                                        <i class="fas fa-save me-2"></i>Simpan
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calendar-alt me-2"></i>Pengaturan Cuti</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="leaveForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Maksimal Cuti Per Tahun</label>
+                                        <input type="number" class="form-control" id="maxDaysPerYear" min="1" max="365">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Maksimal Cuti Berturut-turut</label>
+                                        <input type="number" class="form-control" id="maxConsecutiveDays" min="1" max="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Minimal Pemberitahuan (Hari)</label>
+                                        <input type="number" class="form-control" id="minNoticedays" min="0" max="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="requireApproval">
+                                            <label class="form-check-label" for="requireApproval">
+                                                Memerlukan Persetujuan
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="saveLeaveSettings()">
+                                        <i class="fas fa-save me-2"></i>Simpan
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>    <!--
+ Region Modal -->
+    <div class="modal fade" id="regionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="regionModalTitle">Tambah Wilayah Kerja</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="regionForm">
+                        <input type="hidden" id="regionId">
+                        <div class="mb-3">
+                            <label class="form-label">Kode Wilayah *</label>
+                            <input type="text" class="form-control" id="regionCode" maxlength="5" required>
+                            <div class="form-text">Maksimal 5 karakter, akan otomatis uppercase</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Wilayah *</label>
+                            <input type="text" class="form-control" id="regionName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="regionDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRegion()">Simpan</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Modals will be added here -->
-    <div id="modalsContainer"></div>
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalTitle">Tambah Lokasi Kerja</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="locationForm">
+                        <input type="hidden" id="locationId">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lokasi *</label>
+                            <input type="text" class="form-control" id="locationName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat</label>
+                            <textarea class="form-control" id="locationAddress" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Wilayah *</label>
+                            <select class="form-select" id="locationRegion" required>
+                                <option value="">Pilih Wilayah</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveLocation()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Position Modal -->
+    <div class="modal fade" id="positionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="positionModalTitle">Tambah Jabatan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="positionForm">
+                        <input type="hidden" id="positionId">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Jabatan *</label>
+                            <input type="text" class="form-control" id="positionName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Level *</label>
+                            <input type="number" class="form-control" id="positionLevel" min="1" max="10" required>
+                            <div class="form-text">Level menentukan hierarki jabatan (1=terendah)</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Level Approval</label>
+                            <input type="number" class="form-control" id="positionApprovalLevel" min="1" max="10">
+                            <div class="form-text">Kosongkan untuk menggunakan level yang sama</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="positionDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="savePosition()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="auth-protection.js"></script>
+    <script src="master-data-manager.js"></script>
     <script>
         // Global variables
-        let currentTab = 'regions';
-        let masterDataManager = null;
+        let currentEditId = null;
+        let currentEditType = null;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -586,40 +447,419 @@
             const currentUser = checkRole('admin');
             if (!currentUser) return;
 
-            // Initialize master data manager
-            initializeMasterDataManager();
-            
-            // Load initial data
-            loadAllData();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            console.log('🔧 Master Data Management initialized');
+            // Load all data
+            loadRegions();
+            loadLocations();
+            loadPositions();
+            loadSettings();
+
+            // Listen for data updates
+            window.addEventListener('masterDataUpdated', function() {
+                loadRegions();
+                loadLocations();
+                loadPositions();
+            });
         });
 
-        // Placeholder functions - will be implemented in next tasks
-        function initializeMasterDataManager() {
-            console.log('Initializing Master Data Manager...');
+        // ==================== REGIONS MANAGEMENT ====================
+
+        function loadRegions() {
+            const regions = masterDataManager.getRegions();
+            const tbody = document.querySelector('#regionsTable tbody');
+            
+            tbody.innerHTML = '';
+            
+            regions.forEach(region => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="badge bg-primary">${region.code}</span></td>
+                    <td><strong>${region.name}</strong></td>
+                    <td>${region.description || '-'}</td>
+                    <td><span class="badge bg-info">${region.locationCount || 0}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="editRegion(${region.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRegion(${region.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
-        function loadAllData() {
-            console.log('Loading all master data...');
+        function showRegionModal(id = null) {
+            currentEditId = id;
+            currentEditType = 'region';
+            
+            const modal = new bootstrap.Modal(document.getElementById('regionModal'));
+            const title = document.getElementById('regionModalTitle');
+            
+            if (id) {
+                title.textContent = 'Edit Wilayah Kerja';
+                const region = masterDataManager.getRegions().find(r => r.id === id);
+                if (region) {
+                    document.getElementById('regionId').value = region.id;
+                    document.getElementById('regionCode').value = region.code;
+                    document.getElementById('regionName').value = region.name;
+                    document.getElementById('regionDescription').value = region.description || '';
+                }
+            } else {
+                title.textContent = 'Tambah Wilayah Kerja';
+                document.getElementById('regionForm').reset();
+                document.getElementById('regionId').value = '';
+            }
+            
+            modal.show();
         }
 
-        function setupEventListeners() {
-            console.log('Setting up event listeners...');
+        function saveRegion() {
+            const id = document.getElementById('regionId').value;
+            const regionData = {
+                code: document.getElementById('regionCode').value.trim(),
+                name: document.getElementById('regionName').value.trim(),
+                description: document.getElementById('regionDescription').value.trim()
+            };
+
+            try {
+                if (id) {
+                    masterDataManager.updateRegion(parseInt(id), regionData);
+                    showAlert('Wilayah berhasil diupdate!', 'success');
+                } else {
+                    masterDataManager.createRegion(regionData);
+                    showAlert('Wilayah berhasil ditambahkan!', 'success');
+                }
+                
+                bootstrap.Modal.getInstance(document.getElementById('regionModal')).hide();
+                loadRegions();
+                loadLocationRegionOptions();
+            } catch (error) {
+                showAlert(error.message, 'danger');
+            }
         }
 
-        // Placeholder functions for UI actions
-        function showAddRegionModal() { console.log('Show add region modal'); }
-        function showAddLocationModal() { console.log('Show add location modal'); }
-        function showAddPositionModal() { console.log('Show add position modal'); }
-        function refreshRegions() { console.log('Refresh regions'); }
-        function refreshLocations() { console.log('Refresh locations'); }
-        function refreshPositions() { console.log('Refresh positions'); }
-        function exportAllData() { console.log('Export all data'); }
-        function importData() { console.log('Import data'); }
+        function editRegion(id) {
+            showRegionModal(id);
+        }
+
+        function deleteRegion(id) {
+            const region = masterDataManager.getRegions().find(r => r.id === id);
+            if (!region) return;
+
+            if (confirm(`Apakah Anda yakin ingin menghapus wilayah "${region.name}"?`)) {
+                try {
+                    masterDataManager.deleteRegion(id);
+                    showAlert('Wilayah berhasil dihapus!', 'success');
+                    loadRegions();
+                    loadLocationRegionOptions();
+                } catch (error) {
+                    showAlert(error.message, 'danger');
+                }
+            }
+        }
+
+        // ==================== LOCATIONS MANAGEMENT ====================
+
+        function loadLocations() {
+            const locations = masterDataManager.getLocations();
+            const tbody = document.querySelector('#locationsTable tbody');
+            
+            tbody.innerHTML = '';
+            
+            locations.forEach(location => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${location.name}</strong></td>
+                    <td>${location.address || '-'}</td>
+                    <td><span class="badge bg-secondary">${location.region_name}</span></td>
+                    <td><span class="badge bg-info">${location.employeeCount || 0}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="editLocation(${location.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteLocation(${location.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function showLocationModal(id = null) {
+            currentEditId = id;
+            currentEditType = 'location';
+            
+            loadLocationRegionOptions();
+            
+            const modal = new bootstrap.Modal(document.getElementById('locationModal'));
+            const title = document.getElementById('locationModalTitle');
+            
+            if (id) {
+                title.textContent = 'Edit Lokasi Kerja';
+                const location = masterDataManager.getLocations().find(l => l.id === id);
+                if (location) {
+                    document.getElementById('locationId').value = location.id;
+                    document.getElementById('locationName').value = location.name;
+                    document.getElementById('locationAddress').value = location.address || '';
+                    document.getElementById('locationRegion').value = location.region_id;
+                }
+            } else {
+                title.textContent = 'Tambah Lokasi Kerja';
+                document.getElementById('locationForm').reset();
+                document.getElementById('locationId').value = '';
+            }
+            
+            modal.show();
+        }
+
+        function loadLocationRegionOptions() {
+            const regions = masterDataManager.getRegions();
+            const select = document.getElementById('locationRegion');
+            
+            // Clear existing options except first
+            select.innerHTML = '<option value="">Pilih Wilayah</option>';
+            
+            regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.id;
+                option.textContent = `${region.name} (${region.code})`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveLocation() {
+            const id = document.getElementById('locationId').value;
+            const locationData = {
+                name: document.getElementById('locationName').value.trim(),
+                address: document.getElementById('locationAddress').value.trim(),
+                region_id: parseInt(document.getElementById('locationRegion').value)
+            };
+
+            try {
+                if (id) {
+                    masterDataManager.updateLocation(parseInt(id), locationData);
+                    showAlert('Lokasi berhasil diupdate!', 'success');
+                } else {
+                    masterDataManager.createLocation(locationData);
+                    showAlert('Lokasi berhasil ditambahkan!', 'success');
+                }
+                
+                bootstrap.Modal.getInstance(document.getElementById('locationModal')).hide();
+                loadLocations();
+                loadRegions(); // Update location counts
+            } catch (error) {
+                showAlert(error.message, 'danger');
+            }
+        }
+
+        function editLocation(id) {
+            showLocationModal(id);
+        }
+
+        function deleteLocation(id) {
+            const location = masterDataManager.getLocations().find(l => l.id === id);
+            if (!location) return;
+
+            if (confirm(`Apakah Anda yakin ingin menghapus lokasi "${location.name}"?`)) {
+                try {
+                    masterDataManager.deleteLocation(id);
+                    showAlert('Lokasi berhasil dihapus!', 'success');
+                    loadLocations();
+                    loadRegions(); // Update location counts
+                } catch (error) {
+                    showAlert(error.message, 'danger');
+                }
+            }
+        }        /
+/ ==================== POSITIONS MANAGEMENT ====================
+
+        function loadPositions() {
+            const positions = masterDataManager.getPositions();
+            const tbody = document.querySelector('#positionsTable tbody');
+            
+            tbody.innerHTML = '';
+            
+            positions.forEach(position => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="badge bg-primary">${position.level}</span></td>
+                    <td><strong>${position.name}</strong></td>
+                    <td>${position.description || '-'}</td>
+                    <td><span class="badge bg-warning">${position.approval_level}</span></td>
+                    <td><span class="badge bg-info">${position.employeeCount || 0}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="editPosition(${position.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePosition(${position.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function showPositionModal(id = null) {
+            currentEditId = id;
+            currentEditType = 'position';
+            
+            const modal = new bootstrap.Modal(document.getElementById('positionModal'));
+            const title = document.getElementById('positionModalTitle');
+            
+            if (id) {
+                title.textContent = 'Edit Jabatan';
+                const position = masterDataManager.getPositions().find(p => p.id === id);
+                if (position) {
+                    document.getElementById('positionId').value = position.id;
+                    document.getElementById('positionName').value = position.name;
+                    document.getElementById('positionLevel').value = position.level;
+                    document.getElementById('positionApprovalLevel').value = position.approval_level;
+                    document.getElementById('positionDescription').value = position.description || '';
+                }
+            } else {
+                title.textContent = 'Tambah Jabatan';
+                document.getElementById('positionForm').reset();
+                document.getElementById('positionId').value = '';
+            }
+            
+            modal.show();
+        }
+
+        function savePosition() {
+            const id = document.getElementById('positionId').value;
+            const level = parseInt(document.getElementById('positionLevel').value);
+            const approvalLevel = document.getElementById('positionApprovalLevel').value;
+            
+            const positionData = {
+                name: document.getElementById('positionName').value.trim(),
+                level: level,
+                approval_level: approvalLevel ? parseInt(approvalLevel) : level,
+                description: document.getElementById('positionDescription').value.trim()
+            };
+
+            try {
+                if (id) {
+                    masterDataManager.updatePosition(parseInt(id), positionData);
+                    showAlert('Jabatan berhasil diupdate!', 'success');
+                } else {
+                    masterDataManager.createPosition(positionData);
+                    showAlert('Jabatan berhasil ditambahkan!', 'success');
+                }
+                
+                bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
+                loadPositions();
+            } catch (error) {
+                showAlert(error.message, 'danger');
+            }
+        }
+
+        function editPosition(id) {
+            showPositionModal(id);
+        }
+
+        function deletePosition(id) {
+            const position = masterDataManager.getPositions().find(p => p.id === id);
+            if (!position) return;
+
+            if (confirm(`Apakah Anda yakin ingin menghapus jabatan "${position.name}"?`)) {
+                try {
+                    masterDataManager.deletePosition(id);
+                    showAlert('Jabatan berhasil dihapus!', 'success');
+                    loadPositions();
+                } catch (error) {
+                    showAlert(error.message, 'danger');
+                }
+            }
+        }
+
+        // ==================== SETTINGS MANAGEMENT ====================
+
+        function loadSettings() {
+            const settings = masterDataManager.getSettings();
+            
+            // Company settings
+            document.getElementById('companyName').value = settings.company?.name || '';
+            document.getElementById('companyAddress').value = settings.company?.address || '';
+            document.getElementById('companyPhone').value = settings.company?.phone || '';
+            document.getElementById('companyEmail').value = settings.company?.email || '';
+            
+            // Leave settings
+            document.getElementById('maxDaysPerYear').value = settings.leave?.maxDaysPerYear || 12;
+            document.getElementById('maxConsecutiveDays').value = settings.leave?.maxConsecutiveDays || 5;
+            document.getElementById('minNoticedays').value = settings.leave?.minNoticedays || 3;
+            document.getElementById('requireApproval').checked = settings.leave?.requireApproval !== false;
+        }
+
+        function saveCompanySettings() {
+            const companyData = {
+                company: {
+                    name: document.getElementById('companyName').value.trim(),
+                    address: document.getElementById('companyAddress').value.trim(),
+                    phone: document.getElementById('companyPhone').value.trim(),
+                    email: document.getElementById('companyEmail').value.trim()
+                }
+            };
+
+            try {
+                masterDataManager.updateSettings(companyData);
+                showAlert('Pengaturan perusahaan berhasil disimpan!', 'success');
+            } catch (error) {
+                showAlert(error.message, 'danger');
+            }
+        }
+
+        function saveLeaveSettings() {
+            const leaveData = {
+                leave: {
+                    maxDaysPerYear: parseInt(document.getElementById('maxDaysPerYear').value),
+                    maxConsecutiveDays: parseInt(document.getElementById('maxConsecutiveDays').value),
+                    minNoticedays: parseInt(document.getElementById('minNoticedays').value),
+                    requireApproval: document.getElementById('requireApproval').checked
+                }
+            };
+
+            try {
+                masterDataManager.updateSettings(leaveData);
+                showAlert('Pengaturan cuti berhasil disimpan!', 'success');
+            } catch (error) {
+                showAlert(error.message, 'danger');
+            }
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+
+        function showAlert(message, type = 'info') {
+            // Create alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Auto-uppercase region code
+        document.addEventListener('DOMContentLoaded', function() {
+            const regionCodeInput = document.getElementById('regionCode');
+            if (regionCodeInput) {
+                regionCodeInput.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            }
+        });
     </script>
 </body>
 </html>
