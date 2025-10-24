@@ -436,7 +436,9 @@ dy>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="auth-protection.js"></script>
     <script src="master-data-manager.js"></script>
+    <script src="realtime-database-manager.js"></script>
     <script src="fix-master-data-buttons.js"></script>
+    <script src="test-master-data-save.js"></script>
     <script>
         // Global variables
         let currentEditId = null;
@@ -478,6 +480,23 @@ dy>
                     loadPositions();
                 });
                 
+                // Listen for realtime data updates
+                window.addEventListener('realtimeDataUpdate', function(event) {
+                    console.log('🔄 Realtime data update:', event.detail);
+                    
+                    // Refresh specific data based on what was updated
+                    const { key } = event.detail;
+                    if (key.includes('regions')) {
+                        loadRegions();
+                        loadLocationRegionOptions();
+                    } else if (key.includes('locations')) {
+                        loadLocations();
+                        loadRegions(); // Update location counts
+                    } else if (key.includes('positions')) {
+                        loadPositions();
+                    }
+                });
+                
                 console.log('✅ Master Data page initialized successfully');
             } catch (error) {
                 console.error('❌ Error initializing Master Data page:', error);
@@ -488,10 +507,29 @@ dy>
         // ==================== REGIONS MANAGEMENT ====================
 
         function loadRegions() {
-            const regions = masterDataManager.getRegions();
+            console.log('📊 Loading regions...');
+            
+            const regions = realtimeDB.getData('leaveflow_regions');
             const tbody = document.querySelector('#regionsTable tbody');
             
+            if (!tbody) {
+                console.error('❌ Regions table body not found');
+                return;
+            }
+            
             tbody.innerHTML = '';
+            
+            if (regions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            Belum ada data wilayah kerja
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
             regions.forEach(region => {
                 const row = document.createElement('tr');
@@ -501,16 +539,18 @@ dy>
                     <td>${region.description || '-'}</td>
                     <td><span class="badge bg-info">${region.locationCount || 0}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="editRegion(${region.id})">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editRegion(${region.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRegion(${region.id})">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRegion(${region.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
+            
+            console.log(`✅ Loaded ${regions.length} regions`);
         }
 
         function showRegionModal(id = null) {
@@ -550,26 +590,57 @@ dy>
         }
 
         function saveRegion() {
+            console.log('💾 saveRegion called');
+            
             const id = document.getElementById('regionId').value;
             const regionData = {
-                code: document.getElementById('regionCode').value.trim(),
+                code: document.getElementById('regionCode').value.trim().toUpperCase(),
                 name: document.getElementById('regionName').value.trim(),
                 description: document.getElementById('regionDescription').value.trim()
             };
 
+            console.log('📝 Region data:', regionData);
+
+            // Validation
+            if (!regionData.code || !regionData.name) {
+                showAlert('Kode dan Nama Wilayah harus diisi!', 'warning');
+                return;
+            }
+
+            if (regionData.code.length > 5) {
+                showAlert('Kode Wilayah maksimal 5 karakter!', 'warning');
+                return;
+            }
+
             try {
+                let result;
+                
                 if (id) {
-                    masterDataManager.updateRegion(parseInt(id), regionData);
+                    // Update using realtime database
+                    result = realtimeDB.saveRegion(regionData, true, id);
                     showAlert('Wilayah berhasil diupdate!', 'success');
+                    console.log('✅ Region updated successfully');
                 } else {
-                    masterDataManager.createRegion(regionData);
+                    // Create using realtime database
+                    result = realtimeDB.saveRegion(regionData, false);
                     showAlert('Wilayah berhasil ditambahkan!', 'success');
+                    console.log('✅ Region created successfully');
                 }
                 
-                bootstrap.Modal.getInstance(document.getElementById('regionModal')).hide();
-                loadRegions();
-                loadLocationRegionOptions();
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('regionModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Refresh data
+                setTimeout(() => {
+                    loadRegions();
+                    loadLocationRegionOptions();
+                }, 100);
+                
             } catch (error) {
+                console.error('❌ Error saving region:', error);
                 showAlert(error.message, 'danger');
             }
         }
@@ -597,29 +668,50 @@ dy>
         // ==================== LOCATIONS MANAGEMENT ====================
 
         function loadLocations() {
-            const locations = masterDataManager.getLocations();
+            console.log('📊 Loading locations...');
+            
+            const locations = realtimeDB.getData('leaveflow_locations');
             const tbody = document.querySelector('#locationsTable tbody');
             
+            if (!tbody) {
+                console.error('❌ Locations table body not found');
+                return;
+            }
+            
             tbody.innerHTML = '';
+            
+            if (locations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            Belum ada data lokasi kerja
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
             locations.forEach(location => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>${location.name}</strong></td>
                     <td>${location.address || '-'}</td>
-                    <td><span class="badge bg-secondary">${location.region_name}</span></td>
+                    <td><span class="badge bg-secondary">${location.region_name || 'Unknown'}</span></td>
                     <td><span class="badge bg-info">${location.employeeCount || 0}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="editLocation(${location.id})">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editLocation(${location.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteLocation(${location.id})">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteLocation(${location.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
+            
+            console.log(`✅ Loaded ${locations.length} locations`);
         }
 
         function showLocationModal(id = null) {
@@ -650,8 +742,15 @@ dy>
         }
 
         function loadLocationRegionOptions() {
-            const regions = masterDataManager.getRegions();
+            console.log('📊 Loading region options...');
+            
+            const regions = realtimeDB.getData('leaveflow_regions');
             const select = document.getElementById('locationRegion');
+            
+            if (!select) {
+                console.error('❌ Location region select not found');
+                return;
+            }
             
             // Clear existing options except first
             select.innerHTML = '<option value="">Pilih Wilayah</option>';
@@ -662,9 +761,13 @@ dy>
                 option.textContent = `${region.name} (${region.code})`;
                 select.appendChild(option);
             });
+            
+            console.log(`✅ Loaded ${regions.length} region options`);
         }
 
         function saveLocation() {
+            console.log('💾 saveLocation called');
+            
             const id = document.getElementById('locationId').value;
             const locationData = {
                 name: document.getElementById('locationName').value.trim(),
@@ -672,19 +775,43 @@ dy>
                 region_id: parseInt(document.getElementById('locationRegion').value)
             };
 
+            console.log('📝 Location data:', locationData);
+
+            // Validation
+            if (!locationData.name || !locationData.region_id) {
+                showAlert('Nama Lokasi dan Wilayah harus diisi!', 'warning');
+                return;
+            }
+
             try {
+                let result;
+                
                 if (id) {
-                    masterDataManager.updateLocation(parseInt(id), locationData);
+                    // Update using realtime database
+                    result = realtimeDB.saveLocation(locationData, true, id);
                     showAlert('Lokasi berhasil diupdate!', 'success');
+                    console.log('✅ Location updated successfully');
                 } else {
-                    masterDataManager.createLocation(locationData);
+                    // Create using realtime database
+                    result = realtimeDB.saveLocation(locationData, false);
                     showAlert('Lokasi berhasil ditambahkan!', 'success');
+                    console.log('✅ Location created successfully');
                 }
                 
-                bootstrap.Modal.getInstance(document.getElementById('locationModal')).hide();
-                loadLocations();
-                loadRegions(); // Update location counts
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('locationModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Refresh data
+                setTimeout(() => {
+                    loadLocations();
+                    loadRegions(); // Update location counts
+                }, 100);
+                
             } catch (error) {
+                console.error('❌ Error saving location:', error);
                 showAlert(error.message, 'danger');
             }
         }
@@ -711,10 +838,29 @@ dy>
 / ==================== POSITIONS MANAGEMENT ====================
 
         function loadPositions() {
-            const positions = masterDataManager.getPositions();
+            console.log('📊 Loading positions...');
+            
+            const positions = realtimeDB.getData('leaveflow_positions');
             const tbody = document.querySelector('#positionsTable tbody');
             
+            if (!tbody) {
+                console.error('❌ Positions table body not found');
+                return;
+            }
+            
             tbody.innerHTML = '';
+            
+            if (positions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            Belum ada data jabatan
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
             positions.forEach(position => {
                 const row = document.createElement('tr');
@@ -725,16 +871,18 @@ dy>
                     <td><span class="badge bg-warning">${position.approval_level}</span></td>
                     <td><span class="badge bg-info">${position.employeeCount || 0}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="editPosition(${position.id})">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editPosition(${position.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deletePosition(${position.id})">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePosition(${position.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
+            
+            console.log(`✅ Loaded ${positions.length} positions`);
         }
 
         function showPositionModal(id = null) {
@@ -764,6 +912,8 @@ dy>
         }
 
         function savePosition() {
+            console.log('💾 savePosition called');
+            
             const id = document.getElementById('positionId').value;
             const level = parseInt(document.getElementById('positionLevel').value);
             const approvalLevel = document.getElementById('positionApprovalLevel').value;
@@ -775,18 +925,47 @@ dy>
                 description: document.getElementById('positionDescription').value.trim()
             };
 
+            console.log('📝 Position data:', positionData);
+
+            // Validation
+            if (!positionData.name || !positionData.level) {
+                showAlert('Nama Jabatan dan Level harus diisi!', 'warning');
+                return;
+            }
+
+            if (positionData.level < 1 || positionData.level > 10) {
+                showAlert('Level harus antara 1-10!', 'warning');
+                return;
+            }
+
             try {
+                let result;
+                
                 if (id) {
-                    masterDataManager.updatePosition(parseInt(id), positionData);
+                    // Update using realtime database
+                    result = realtimeDB.savePosition(positionData, true, id);
                     showAlert('Jabatan berhasil diupdate!', 'success');
+                    console.log('✅ Position updated successfully');
                 } else {
-                    masterDataManager.createPosition(positionData);
+                    // Create using realtime database
+                    result = realtimeDB.savePosition(positionData, false);
                     showAlert('Jabatan berhasil ditambahkan!', 'success');
+                    console.log('✅ Position created successfully');
                 }
                 
-                bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
-                loadPositions();
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('positionModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Refresh data
+                setTimeout(() => {
+                    loadPositions();
+                }, 100);
+                
             } catch (error) {
+                console.error('❌ Error saving position:', error);
                 showAlert(error.message, 'danger');
             }
         }
