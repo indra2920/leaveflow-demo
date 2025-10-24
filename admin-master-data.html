@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaveFlow Admin - Master Data Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --admin-gradient: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --hover-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #f8f4ff 0%, #e8f0fe 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--admin-gradient) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .page-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 25px 25px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            color: #6c757d;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            padding: 15px 25px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--admin-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(111, 66, 193, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .toolbar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 20px 25px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--hover-shadow);
+        }
+
+        .modal-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            border: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .dependency-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .search-highlight {
+            background-color: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                padding: 15px;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .table-responsive {
+                border-radius: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-database me-2"></i>Master Data Management
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="admin-dashboard-fixed.html">
+                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                </a>
+                <a class="nav-link" href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">
+                        <i class="fas fa-cogs me-3"></i>Master Data Management
+                    </h1>
+                    <p class="mb-0 opacity-75">
+                        Kelola data master: Wilayah Kerja, Lokasi Kerja, dan Jabatan
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-outline-light" onclick="exportAllData()">
+                            <i class="fas fa-download me-2"></i>Export
+                        </button>
+                        <button class="btn btn-outline-light" onclick="importData()">
+                            <i class="fas fa-upload me-2"></i>Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="masterDataTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="regions-tab" data-bs-toggle="tab" data-bs-target="#regions" type="button">
+                    <i class="fas fa-globe-americas me-2"></i>Wilayah Kerja
+                    <span class="badge badge-primary ms-2" id="regionsCount">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button">
+                    <i class="fas fa-map-marker-alt me-2"></i>Lokasi Kerja
+                    <span class="badge badge-success ms-2" id="locationsCount">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="positions-tab" data-bs-toggle="tab" data-bs-target="#positions" type="button">
+                    <i class="fas fa-sitemap me-2"></i>Jabatan
+                    <span class="badge badge-warning ms-2" id="positionsCount">0</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="masterDataTabContent">
+            <!-- Regions Tab -->
+            <div class="tab-pane fade show active" id="regions">
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="regionsSearch" placeholder="Cari wilayah kerja...">
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-primary" onclick="showAddRegionModal()">
+                                    <i class="fas fa-plus me-2"></i>Tambah Wilayah
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="refreshRegions()">
+                                    <i class="fas fa-sync me-2"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regions Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-globe-americas me-2"></i>Daftar Wilayah Kerja</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading-spinner" id="regionsLoading">
+                            <i class="fas fa-spinner"></i>
+                            <p class="mt-2">Loading data...</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="regionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama Wilayah</th>
+                                        <th>Deskripsi</th>
+                                        <th>Jumlah Lokasi</th>
+                                        <th>Dibuat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="regionsTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="regionsEmpty" style="display: none;">
+                            <i class="fas fa-globe-americas"></i>
+                            <h4>Belum Ada Wilayah Kerja</h4>
+                            <p>Mulai dengan menambahkan wilayah kerja pertama untuk perusahaan Anda.</p>
+                            <button class="btn btn-primary" onclick="showAddRegionModal()">
+                                <i class="fas fa-plus me-2"></i>Tambah Wilayah Pertama
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locations Tab -->
+            <div class="tab-pane fade" id="locations">
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="locationsSearch" placeholder="Cari lokasi kerja...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="locationsRegionFilter">
+                                <option value="">Semua Wilayah</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-success" onclick="showAddLocationModal()">
+                                    <i class="fas fa-plus me-2"></i>Tambah Lokasi
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="refreshLocations()">
+                                    <i class="fas fa-sync me-2"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Locations Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-map-marker-alt me-2"></i>Daftar Lokasi Kerja</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading-spinner" id="locationsLoading">
+                            <i class="fas fa-spinner"></i>
+                            <p class="mt-2">Loading data...</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="locationsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Lokasi</th>
+                                        <th>Alamat</th>
+                                        <th>Wilayah</th>
+                                        <th>Jumlah Karyawan</th>
+                                        <th>Dibuat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="locationsTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="locationsEmpty" style="display: none;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h4>Belum Ada Lokasi Kerja</h4>
+                            <p>Tambahkan lokasi kerja untuk setiap wilayah yang sudah dibuat.</p>
+                            <button class="btn btn-success" onclick="showAddLocationModal()">
+                                <i class="fas fa-plus me-2"></i>Tambah Lokasi Pertama
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Positions Tab -->
+            <div class="tab-pane fade" id="positions">
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="positionsSearch" placeholder="Cari jabatan...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="positionsLevelFilter">
+                                <option value="">Semua Level</option>
+                                <option value="1">Level 1 - Staff</option>
+                                <option value="2">Level 2 - Supervisor</option>
+                                <option value="3">Level 3 - Manager</option>
+                                <option value="4">Level 4 - Director</option>
+                                <option value="5">Level 5 - Administrator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-warning" onclick="showAddPositionModal()">
+                                    <i class="fas fa-plus me-2"></i>Tambah Jabatan
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="refreshPositions()">
+                                    <i class="fas fa-sync me-2"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Positions Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-sitemap me-2"></i>Daftar Jabatan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading-spinner" id="positionsLoading">
+                            <i class="fas fa-spinner"></i>
+                            <p class="mt-2">Loading data...</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="positionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Jabatan</th>
+                                        <th>Level</th>
+                                        <th>Level Approval</th>
+                                        <th>Deskripsi</th>
+                                        <th>Jumlah Karyawan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="positionsTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="positionsEmpty" style="display: none;">
+                            <i class="fas fa-sitemap"></i>
+                            <h4>Belum Ada Jabatan</h4>
+                            <p>Buat struktur jabatan untuk mengatur hierarki organisasi.</p>
+                            <button class="btn btn-warning" onclick="showAddPositionModal()">
+                                <i class="fas fa-plus me-2"></i>Tambah Jabatan Pertama
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals will be added here -->
+    <div id="modalsContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="auth-protection.js"></script>
+    <script>
+        // Global variables
+        let currentTab = 'regions';
+        let masterDataManager = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check admin role
+            const currentUser = checkRole('admin');
+            if (!currentUser) return;
+
+            // Initialize master data manager
+            initializeMasterDataManager();
+            
+            // Load initial data
+            loadAllData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('🔧 Master Data Management initialized');
+        });
+
+        // Placeholder functions - will be implemented in next tasks
+        function initializeMasterDataManager() {
+            console.log('Initializing Master Data Manager...');
+        }
+
+        function loadAllData() {
+            console.log('Loading all master data...');
+        }
+
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+        }
+
+        // Placeholder functions for UI actions
+        function showAddRegionModal() { console.log('Show add region modal'); }
+        function showAddLocationModal() { console.log('Show add location modal'); }
+        function showAddPositionModal() { console.log('Show add position modal'); }
+        function refreshRegions() { console.log('Refresh regions'); }
+        function refreshLocations() { console.log('Refresh locations'); }
+        function refreshPositions() { console.log('Refresh positions'); }
+        function exportAllData() { console.log('Export all data'); }
+        function importData() { console.log('Import data'); }
+    </script>
+</body>
+</html>
