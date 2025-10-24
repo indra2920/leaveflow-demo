@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaveFlow - Real Data Setup Wizard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .wizard-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .wizard-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .wizard-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .wizard-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .wizard-content {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .step-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: bold;
+            color: #666;
+            position: relative;
+        }
+        
+        .step-item.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .step-item.completed {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 2px;
+            background: #e0e0e0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-icon {
+            font-size: 4em;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .employee-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .employee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .employee-item:last-child {
+            border-bottom: none;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .add-employee-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>🚀 LeaveFlow Setup</h1>
+            <p>Setup your company data in 5 easy steps</p>
+        </div>
+        
+        <div class="wizard-content">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-item active" data-step="1">1</div>
+                <div class="step-item" data-step="2">2</div>
+                <div class="step-item" data-step="3">3</div>
+                <div class="step-item" data-step="4">4</div>
+                <div class="step-item" data-step="5">5</div>
+            </div>
+            
+            <!-- Step 1: Company Information -->
+            <div class="step active" id="step1">
+                <h2>🏢 Company Information</h2>
+                <p style="margin-bottom: 30px; color: #666;">Enter your company basic information</p>
+                
+                <div class="form-group">
+                    <label for="companyName">Company Name *</label>
+                    <input type="text" id="companyName" placeholder="PT. Your Company Name" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyCode">Company Code *</label>
+                        <input type="text" id="companyCode" placeholder="YCN" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyPhone">Phone Number</label>
+                        <input type="tel" id="companyPhone" placeholder="+62 21 1234567">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyAddress">Company Address *</label>
+                    <textarea id="companyAddress" rows="3" placeholder="Jl. Your Company Address, City, Province, Postal Code" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Step 2: Admin Account -->
+            <div class="step" id="step2">
+                <h2>👤 Administrator Account</h2>
+                <p style="margin-bottom: 30px; color: #666;">Create your main administrator account</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="adminName">Full Name *</label>
+                        <input type="text" id="adminName" placeholder="Your Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminEmployeeId">Employee ID *</label>
+                        <input type="text" id="adminEmployeeId" placeholder="ADM001" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminEmail">Email Address *</label>
+                    <input type="email" id="adminEmail" placeholder="admin@yourcompany.com" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="adminPassword">Password *</label>
+                        <input type="password" id="adminPassword" placeholder="Minimum 8 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminConfirmPassword">Confirm Password *</label>
+                        <input type="password" id="adminConfirmPassword" placeholder="Repeat password" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Regions & Locations -->
+            <div class="step" id="step3">
+                <h2>📍 Regions & Locations</h2>
+                <p style="margin-bottom: 30px; color: #666;">Setup your company regions and office locations</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regionName">Region Name *</label>
+                        <input type="text" id="regionName" placeholder="Head Office Region" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regionCode">Region Code *</label>
+                        <input type="text" id="regionCode" placeholder="HO" maxlength="5" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="locationName">Main Office Name *</label>
+                    <input type="text" id="locationName" placeholder="Head Office" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="locationAddress">Office Address *</label>
+                    <textarea id="locationAddress" rows="3" placeholder="Office address (can be same as company address)" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Step 4: Employees -->
+            <div class="step" id="step4">
+                <h2>👥 Add Employees</h2>
+                <p style="margin-bottom: 30px; color: #666;">Add your company employees (you can add more later)</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="empName">Employee Name</label>
+                        <input type="text" id="empName" placeholder="Employee Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="empId">Employee ID</label>
+                        <input type="text" id="empId" placeholder="EMP001">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="empEmail">Email</label>
+                        <input type="email" id="empEmail" placeholder="employee@yourcompany.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="empPosition">Position</label>
+                        <select id="empPosition">
+                            <option value="1">Staff</option>
+                            <option value="2">Supervisor</option>
+                            <option value="3">Manager</option>
+                            <option value="4">Director</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="button" class="add-employee-btn" onclick="addEmployee()">➕ Add Employee</button>
+                
+                <div class="employee-list" id="employeeList">
+                    <p style="text-align: center; color: #666; font-style: italic;">No employees added yet. Add some employees above.</p>
+                </div>
+            </div>
+            
+            <!-- Step 5: Review & Complete -->
+            <div class="step" id="step5">
+                <h2>✅ Review & Complete</h2>
+                <p style="margin-bottom: 30px; color: #666;">Review your setup and complete the configuration</p>
+                
+                <div id="reviewData"></div>
+                
+                <div class="success-message" id="successMessage" style="display: none;">
+                    <div class="success-icon">🎉</div>
+                    <h3>Setup Complete!</h3>
+                    <p>Your LeaveFlow system is now ready with real company data.</p>
+                    <button class="btn btn-primary" onclick="goToApp()" style="margin-top: 20px;">
+                        🚀 Go to LeaveFlow
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="wizard-actions">
+                <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                    ← Previous
+                </button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                    Next →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let employees = [];
+        
+        function updateStepIndicator() {
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                const stepNum = index + 1;
+                item.classList.remove('active', 'completed');
+                
+                if (stepNum < currentStep) {
+                    item.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = step > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').textContent = step === 5 ? 'Complete Setup' : 'Next →';
+            
+            updateStepIndicator();
+        }
+        
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    return document.getElementById('companyName').value &&
+                           document.getElementById('companyCode').value &&
+                           document.getElementById('companyAddress').value;
+                case 2:
+                    const password = document.getElementById('adminPassword').value;
+                    const confirmPassword = document.getElementById('adminConfirmPassword').value;
+                    return document.getElementById('adminName').value &&
+                           document.getElementById('adminEmployeeId').value &&
+                           document.getElementById('adminEmail').value &&
+                           password && password === confirmPassword && password.length >= 8;
+                case 3:
+                    return document.getElementById('regionName').value &&
+                           document.getElementById('regionCode').value &&
+                           document.getElementById('locationName').value &&
+                           document.getElementById('locationAddress').value;
+                case 4:
+                    return true; // Optional step
+                default:
+                    return true;
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep === 5) {
+                completeSetup();
+                return;
+            }
+            
+            if (!validateStep(currentStep)) {
+                alert('Please fill in all required fields before continuing.');
+                return;
+            }
+            
+            if (currentStep === 4) {
+                showReview();
+            }
+            
+            currentStep++;
+            showStep(currentStep);
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+        
+        function addEmployee() {
+            const name = document.getElementById('empName').value;
+            const id = document.getElementById('empId').value;
+            const email = document.getElementById('empEmail').value;
+            const position = document.getElementById('empPosition').value;
+            
+            if (!name || !id || !email) {
+                alert('Please fill in employee name, ID, and email.');
+                return;
+            }
+            
+            const employee = {
+                id: Date.now(),
+                employee_id: id,
+                name: name,
+                email: email,
+                position_id: parseInt(position),
+                region_id: 1,
+                location_id: 1,
+                supervisor_id: null,
+                password: 'employee123' // Default password
+            };
+            
+            employees.push(employee);
+            updateEmployeeList();
+            
+            // Clear form
+            document.getElementById('empName').value = '';
+            document.getElementById('empId').value = '';
+            document.getElementById('empEmail').value = '';
+        }
+        
+        function removeEmployee(id) {
+            employees = employees.filter(emp => emp.id !== id);
+            updateEmployeeList();
+        }
+        
+        function updateEmployeeList() {
+            const list = document.getElementById('employeeList');
+            
+            if (employees.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No employees added yet. Add some employees above.</p>';
+                return;
+            }
+            
+            const positions = ['', 'Staff', 'Supervisor', 'Manager', 'Director'];
+            
+            list.innerHTML = employees.map(emp => `
+                <div class="employee-item">
+                    <div>
+                        <strong>${emp.name}</strong> (${emp.employee_id})<br>
+                        <small>${emp.email} - ${positions[emp.position_id]}</small>
+                    </div>
+                    <button class="remove-btn" onclick="removeEmployee(${emp.id})">Remove</button>
+                </div>
+            `).join('');
+        }
+        
+        function showReview() {
+            const reviewData = document.getElementById('reviewData');
+            const positions = ['', 'Staff', 'Supervisor', 'Manager', 'Director'];
+            
+            reviewData.innerHTML = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4>🏢 Company Information</h4>
+                    <p><strong>Name:</strong> ${document.getElementById('companyName').value}</p>
+                    <p><strong>Code:</strong> ${document.getElementById('companyCode').value}</p>
+                    <p><strong>Address:</strong> ${document.getElementById('companyAddress').value}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4>👤 Administrator</h4>
+                    <p><strong>Name:</strong> ${document.getElementById('adminName').value}</p>
+                    <p><strong>Employee ID:</strong> ${document.getElementById('adminEmployeeId').value}</p>
+                    <p><strong>Email:</strong> ${document.getElementById('adminEmail').value}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4>📍 Location</h4>
+                    <p><strong>Region:</strong> ${document.getElementById('regionName').value} (${document.getElementById('regionCode').value})</p>
+                    <p><strong>Office:</strong> ${document.getElementById('locationName').value}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4>👥 Employees (${employees.length})</h4>
+                    ${employees.length > 0 ? 
+                        employees.map(emp => `<p>• ${emp.name} (${emp.employee_id}) - ${positions[emp.position_id]}</p>`).join('') :
+                        '<p style="font-style: italic; color: #666;">No additional employees added</p>'
+                    }
+                </div>
+            `;
+        }
+        
+        function completeSetup() {
+            // Create company data structure
+            const setupData = {
+                company: {
+                    name: document.getElementById('companyName').value,
+                    code: document.getElementById('companyCode').value,
+                    address: document.getElementById('companyAddress').value,
+                    phone: document.getElementById('companyPhone').value
+                },
+                regions: [{
+                    id: 1,
+                    name: document.getElementById('regionName').value,
+                    code: document.getElementById('regionCode').value
+                }],
+                locations: [{
+                    id: 1,
+                    name: document.getElementById('locationName').value,
+                    address: document.getElementById('locationAddress').value,
+                    region_id: 1
+                }],
+                positions: [
+                    {id: 1, name: 'Staff', level: 1},
+                    {id: 2, name: 'Supervisor', level: 2},
+                    {id: 3, name: 'Manager', level: 3},
+                    {id: 4, name: 'Director', level: 4},
+                    {id: 5, name: 'Administrator', level: 5}
+                ],
+                employees: [
+                    {
+                        id: 1,
+                        employee_id: document.getElementById('adminEmployeeId').value,
+                        name: document.getElementById('adminName').value,
+                        email: document.getElementById('adminEmail').value,
+                        password: document.getElementById('adminPassword').value,
+                        position_id: 5,
+                        region_id: 1,
+                        location_id: 1,
+                        supervisor_id: null,
+                        is_admin: true
+                    },
+                    ...employees.map((emp, index) => ({
+                        ...emp,
+                        id: index + 2
+                    }))
+                ]
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('leaveflow_company', JSON.stringify(setupData.company));
+            localStorage.setItem('leaveflow_regions', JSON.stringify(setupData.regions));
+            localStorage.setItem('leaveflow_locations', JSON.stringify(setupData.locations));
+            localStorage.setItem('leaveflow_positions', JSON.stringify(setupData.positions));
+            localStorage.setItem('leaveflow_employees', JSON.stringify(setupData.employees));
+            localStorage.setItem('leaveflow_leave_requests', JSON.stringify([]));
+            localStorage.setItem('leaveflow_setup_complete', 'true');
+            
+            // Show success message
+            document.getElementById('reviewData').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'none';
+        }
+        
+        function goToApp() {
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize
+        showStep(1);
+    </script>
+</body>
+</html>
