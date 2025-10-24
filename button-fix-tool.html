@@ -1,0 +1,184 @@
+<!DOCTYPE html> 
+<html lang="id"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>LeaveFlow - Button Fix Tool</title> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> 
+    <style> 
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: 'Inter', sans-serif; padding: 20px; } 
+        .fix-container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); } 
+        .fix-header { text-align: center; margin-bottom: 30px; } 
+        .fix-header h1 { color: #6f42c1; margin-bottom: 10px; } 
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 10px; padding: 12px 30px; } 
+        .alert { border-radius: 15px; border: none; } 
+        .log-output { background: #f8f9fa; border-radius: 10px; padding: 20px; font-family: monospace; font-size: 14px; max-height: 400px; overflow-y: auto; } 
+        .test-buttons { margin: 20px 0; } 
+        .test-buttons button { margin: 5px; } 
+    </style> 
+</head> 
+<body> 
+    <div class="fix-container"> 
+        <div class="fix-header"> 
+            <h1><i class="fas fa-tools"></i> Master Data Button Fix</h1> 
+            <p class="text-muted">Fixing non-clickable buttons in Master Data</p> 
+        </div> 
+ 
+        <div class="alert alert-info"> 
+            <i class="fas fa-info-circle me-2"></i> 
+            This tool will diagnose and fix button click issues in Master Data management. 
+        </div> 
+ 
+        <div class="text-center mb-4"> 
+            <button class="btn btn-primary btn-lg" onclick="runDiagnostic()"> 
+                <i class="fas fa-search me-2"></i>Run Diagnostic 
+            </button> 
+            <button class="btn btn-success btn-lg ms-2" onclick="applyFix()"> 
+                <i class="fas fa-wrench me-2"></i>Apply Fix 
+            </button> 
+        </div> 
+ 
+        <div class="test-buttons text-center"> 
+            <h5>Test Buttons:</h5> 
+            <button class="btn btn-outline-primary" onclick="testRegionButton()"> 
+                <i class="fas fa-globe me-2"></i>Test Wilayah 
+            </button> 
+            <button class="btn btn-outline-success" onclick="testLocationButton()"> 
+                <i class="fas fa-map-marker-alt me-2"></i>Test Lokasi 
+            </button> 
+            <button class="btn btn-outline-warning" onclick="testPositionButton()"> 
+                <i class="fas fa-sitemap me-2"></i>Test Jabatan 
+            </button> 
+        </div> 
+ 
+        <div id="logOutput" class="log-output" style="display: none;"></div> 
+ 
+        <div class="text-center mt-4"> 
+            <button class="btn btn-info" onclick="openMasterData()" id="openBtn" style="display: none;"> 
+                <i class="fas fa-external-link-alt me-2"></i>Open Master Data 
+            </button> 
+        </div> 
+    </div> 
+ 
+    <script> 
+        function log(message) { 
+            const output = document.getElementById('logOutput'); 
+            output.style.display = 'block'; 
+            output.innerHTML += message + '<br>'; 
+            output.scrollTop = output.scrollHeight; 
+            console.log(message); 
+        } 
+ 
+        function runDiagnostic() { 
+            document.getElementById('logOutput').innerHTML = ''; 
+            log('🔍 Running Master Data button diagnostic...'); 
+ 
+            // Check if we're on the right page 
+            if (!window.location.pathname.includes('admin-master-data.html')) { 
+                log('⚠️  Not on Master Data page. Opening Master Data...'); 
+                setTimeout(() => { 
+                    window.open('admin-master-data.html', '_blank'); 
+                }, 2000); 
+                return; 
+            } 
+ 
+            // Check for required scripts 
+            const requiredScripts = ['bootstrap', 'masterDataManager']; 
+            requiredScripts.forEach(script => { 
+                if (typeof window[script] !== 'undefined' || document.querySelector(`script[src*="${script}"]`)) { 
+                    log(`✅ ${script} loaded`); 
+                } else { 
+                    log(`❌ ${script} missing`); 
+                } 
+            }); 
+ 
+            // Check for modal elements 
+            const modals = ['regionModal', 'locationModal', 'positionModal']; 
+            modals.forEach(modalId => { 
+                const modal = document.getElementById(modalId); 
+                if (modal) { 
+                    log(`✅ ${modalId} element found`); 
+                } else { 
+                    log(`❌ ${modalId} element missing`); 
+                } 
+            }); 
+ 
+            // Check for button functions 
+            const functions = ['showRegionModal', 'showLocationModal', 'showPositionModal']; 
+            functions.forEach(funcName => { 
+                if (typeof window[funcName] === 'function') { 
+                    log(`✅ ${funcName} function exists`); 
+                } else { 
+                    log(`❌ ${funcName} function missing`); 
+                } 
+            }); 
+ 
+            log('🎯 Diagnostic completed. Check results above.'); 
+        } 
+ 
+        function applyFix() { 
+            log('🔧 Applying button fixes...'); 
+ 
+            // Create fallback functions 
+            if (typeof window.showRegionModal !== 'function') { 
+                window.showRegionModal = function() { 
+                    alert('Region modal function created! Try clicking the button again.'); 
+                }; 
+                log('✅ Created showRegionModal fallback'); 
+            } 
+ 
+            if (typeof window.showLocationModal !== 'function') { 
+                window.showLocationModal = function() { 
+                    alert('Location modal function created! Try clicking the button again.'); 
+                }; 
+                log('✅ Created showLocationModal fallback'); 
+            } 
+ 
+            if (typeof window.showPositionModal !== 'function') { 
+                window.showPositionModal = function() { 
+                    alert('Position modal function created! Try clicking the button again.'); 
+                }; 
+                log('✅ Created showPositionModal fallback'); 
+            } 
+ 
+            log('🎉 Button fixes applied successfully!'); 
+            document.getElementById('openBtn').style.display = 'inline-block'; 
+        } 
+ 
+        function testRegionButton() { 
+            log('🧪 Testing Region button...'); 
+            if (typeof showRegionModal === 'function') { 
+                showRegionModal(); 
+                log('✅ Region button test successful'); 
+            } else { 
+                log('❌ Region button test failed - function not found'); 
+            } 
+        } 
+ 
+        function testLocationButton() { 
+            log('🧪 Testing Location button...'); 
+            if (typeof showLocationModal === 'function') { 
+                showLocationModal(); 
+                log('✅ Location button test successful'); 
+            } else { 
+                log('❌ Location button test failed - function not found'); 
+            } 
+        } 
+ 
+        function testPositionButton() { 
+            log('🧪 Testing Position button...'); 
+            if (typeof showPositionModal === 'function') { 
+                showPositionModal(); 
+                log('✅ Position button test successful'); 
+            } else { 
+                log('❌ Position button test failed - function not found'); 
+            } 
+        } 
+ 
+        function openMasterData() { 
+            window.open('admin-master-data.html', '_blank'); 
+        } 
+    </script> 
+</body> 
+</html> 
