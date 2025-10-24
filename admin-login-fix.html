@@ -1,0 +1,141 @@
+<!DOCTYPE html> 
+<html lang="id"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>LeaveFlow - Admin Login Fix</title> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> 
+    <style> 
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: 'Inter', sans-serif; padding: 20px; } 
+        .fix-container { max-width: 700px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); } 
+        .fix-header { text-align: center; margin-bottom: 30px; } 
+        .fix-header h1 { color: #6f42c1; margin-bottom: 10px; } 
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 10px; padding: 12px 30px; } 
+        .alert { border-radius: 15px; border: none; } 
+        .log-output { background: #f8f9fa; border-radius: 10px; padding: 20px; font-family: monospace; font-size: 14px; max-height: 400px; overflow-y: auto; } 
+        .credentials { background: #e8f5e8; border-radius: 10px; padding: 20px; margin: 20px 0; } 
+    </style> 
+</head> 
+<body> 
+    <div class="fix-container"> 
+        <div class="fix-header"> 
+            <h1><i class="fas fa-tools"></i> Admin Login Fix</h1> 
+            <p class="text-muted">Fixing admin login issues</p> 
+        </div> 
+ 
+        <div class="alert alert-info"> 
+            <i class="fas fa-info-circle me-2"></i> 
+            This tool will create/fix the admin user and test login functionality. 
+        </div> 
+ 
+        <div class="text-center mb-4"> 
+            <button class="btn btn-primary btn-lg" onclick="runFix()"> 
+                <i class="fas fa-play me-2"></i>Fix Admin Login 
+            </button> 
+        </div> 
+ 
+        <div id="logOutput" class="log-output" style="display: none;"></div> 
+ 
+        <div id="credentials" class="credentials" style="display: none;"> 
+            <h5><i class="fas fa-key me-2"></i>Admin Login Credentials</h5> 
+            <p><strong>Email:</strong> admin@yourcompany.com</p> 
+            <p><strong>Password:</strong> admin123</p> 
+            <p><strong>Employee ID:</strong> ADMIN001</p> 
+        </div> 
+ 
+        <div class="text-center mt-4"> 
+            <button class="btn btn-success" onclick="openLogin()" id="loginBtn" style="display: none;"> 
+                <i class="fas fa-sign-in-alt me-2"></i>Test Login Now 
+            </button> 
+        </div> 
+    </div> 
+ 
+    <script> 
+        function log(message) { 
+            const output = document.getElementById('logOutput'); 
+            output.style.display = 'block'; 
+            output.innerHTML += message + '<br>'; 
+            output.scrollTop = output.scrollHeight; 
+            console.log(message); 
+        } 
+ 
+        function runFix() { 
+            document.getElementById('logOutput').innerHTML = ''; 
+            log('🚀 Starting admin login fix...'); 
+ 
+            // Create positions 
+            const positions = [ 
+                {id: 1, name: 'Staff', level: 1}, 
+                {id: 2, name: 'Supervisor', level: 2}, 
+                {id: 3, name: 'Manager', level: 3}, 
+                {id: 4, name: 'Director', level: 4}, 
+                {id: 5, name: 'Administrator', level: 5} 
+            ]; 
+            localStorage.setItem('leaveflow_positions', JSON.stringify(positions)); 
+            log('✅ Positions created'); 
+ 
+            // Create regions 
+            const regions = [{id: 1, name: 'Head Office Region', code: 'HO'}]; 
+            localStorage.setItem('leaveflow_regions', JSON.stringify(regions)); 
+            log('✅ Regions created'); 
+ 
+            // Create locations 
+            const locations = [{id: 1, name: 'Head Office', address: 'Your Company Address', region_id: 1, region_name: 'Head Office Region'}]; 
+            localStorage.setItem('leaveflow_locations', JSON.stringify(locations)); 
+            log('✅ Locations created'); 
+ 
+            // Get existing employees and remove old admin 
+            let employees = JSON.parse(localStorage.getItem('leaveflow_employees') || '[]'); 
+            employees = employees.filter(emp => emp.email !== 'admin@yourcompany.com' && emp.employee_id !== 'ADMIN001' && !emp.is_admin); 
+            log('🧹 Removed old admin users'); 
+ 
+            // Create fresh admin user 
+            const adminUser = { 
+                id: 1, 
+                employee_id: 'ADMIN001', 
+                name: 'System Administrator', 
+                email: 'admin@yourcompany.com', 
+                password: 'admin123', 
+                position_id: 5, 
+                position_name: 'Administrator', 
+                work_location_id: 1, 
+                location_name: 'Head Office', 
+                supervisor_id: null, 
+                supervisor_name: null, 
+                status: 'active', 
+                is_admin: true, 
+                created_at: new Date().toISOString().split('T')[0], 
+                join_date: new Date().toISOString().split('T')[0] 
+            }; 
+ 
+            // Add admin at beginning 
+            employees.unshift(adminUser); 
+            localStorage.setItem('leaveflow_employees', JSON.stringify(employees)); 
+            log('✅ Admin user created'); 
+ 
+            // Test admin login 
+            const testUser = employees.find(emp => emp.email === 'admin@yourcompany.com'); 
+            if (testUser && testUser.password === 'admin123') { 
+                log('✅ Admin login test successful'); 
+                log('📧 Email: ' + testUser.email); 
+                log('🔑 Password: ' + testUser.password); 
+                log('👤 Name: ' + testUser.name); 
+                log('🏢 Position: ' + testUser.position_name); 
+                log('🔐 Is Admin: ' + testUser.is_admin); 
+                document.getElementById('credentials').style.display = 'block'; 
+                document.getElementById('loginBtn').style.display = 'inline-block'; 
+                log('🎉 Admin login fix completed successfully!'); 
+            } else { 
+                log('❌ Admin login test failed'); 
+            } 
+ 
+            log('👥 Total employees in system: ' + employees.length); 
+        } 
+ 
+        function openLogin() { 
+            window.open('auth-system.html', '_blank'); 
+        } 
+    </script> 
+</body> 
+</html> 

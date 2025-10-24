@@ -384,6 +384,95 @@
             return JSON.parse(localStorage.getItem('leaveflow_current_user') || 'null');
         }
 
+        // Ensure admin user exists
+        function ensureAdminUser() {
+            let employees = getEmployees();
+            
+            // Check if admin user already exists
+            const adminExists = employees.find(emp => 
+                emp.email === 'admin@yourcompany.com' || 
+                emp.employee_id === 'ADMIN001' ||
+                emp.is_admin === true
+            );
+            
+            if (!adminExists) {
+                console.log('🔧 Creating default admin user...');
+                
+                // Create default admin user
+                const adminUser = {
+                    id: 1,
+                    employee_id: 'ADMIN001',
+                    name: 'System Administrator',
+                    email: 'admin@yourcompany.com',
+                    password: 'admin123',
+                    position_id: 5,
+                    position_name: 'Administrator',
+                    work_location_id: 1,
+                    location_name: 'Head Office',
+                    supervisor_id: null,
+                    supervisor_name: null,
+                    status: 'active',
+                    is_admin: true,
+                    created_at: new Date().toISOString().split('T')[0],
+                    join_date: new Date().toISOString().split('T')[0]
+                };
+                
+                // Add admin to employees array
+                employees.unshift(adminUser); // Add at beginning
+                saveEmployees(employees);
+                
+                console.log('✅ Default admin user created');
+                console.log('📧 Email: admin@yourcompany.com');
+                console.log('🔑 Password: admin123');
+            }
+            
+            return employees;
+        }
+
+        // Ensure basic data structure exists
+        function ensureBasicData() {
+            // Ensure positions exist
+            let positions = getPositions();
+            if (positions.length === 0) {
+                positions = [
+                    {id: 1, name: 'Staff', level: 1},
+                    {id: 2, name: 'Supervisor', level: 2},
+                    {id: 3, name: 'Manager', level: 3},
+                    {id: 4, name: 'Director', level: 4},
+                    {id: 5, name: 'Administrator', level: 5}
+                ];
+                localStorage.setItem('leaveflow_positions', JSON.stringify(positions));
+            }
+            
+            // Ensure locations exist
+            let locations = getLocations();
+            if (locations.length === 0) {
+                locations = [
+                    {
+                        id: 1,
+                        name: 'Head Office',
+                        address: 'Your Company Address - Please Update',
+                        region_id: 1,
+                        region_name: 'Head Office Region'
+                    }
+                ];
+                localStorage.setItem('leaveflow_locations', JSON.stringify(locations));
+            }
+            
+            // Ensure regions exist
+            let regions = JSON.parse(localStorage.getItem('leaveflow_regions') || '[]');
+            if (regions.length === 0) {
+                regions = [
+                    {
+                        id: 1,
+                        name: 'Head Office Region',
+                        code: 'HO'
+                    }
+                ];
+                localStorage.setItem('leaveflow_regions', JSON.stringify(regions));
+            }
+        }
+
         // Alert Functions
         function showAlert(message, type = 'info') {
             const alertContainer = document.getElementById('alertContainer');
@@ -439,7 +528,11 @@
             
             // Simulate API call delay
             setTimeout(() => {
-                const employees = getEmployees();
+                // Ensure admin user exists before login attempt
+                const employees = ensureAdminUser();
+                
+                console.log('🔍 Looking for user:', email);
+                console.log('📊 Available employees:', employees.length);
                 
                 // Find user by email or employee_id
                 const user = employees.find(emp => 
@@ -447,11 +540,15 @@
                     emp.employee_id.toLowerCase() === email.toLowerCase()
                 );
                 
+                console.log('👤 Found user:', user ? user.name : 'Not found');
+                
                 if (!user) {
                     showLoading(false);
-                    showAlert('User not found. Please check your email/employee ID.', 'danger');
+                    showAlert(`User not found. Available users: ${employees.map(e => e.email).join(', ')}`, 'danger');
                     return;
                 }
+                
+                console.log('🔑 Checking password:', password, 'vs', user.password);
                 
                 // In real app, you would hash and compare passwords
                 // For demo, we'll use simple comparison
@@ -467,13 +564,18 @@
                 showLoading(false);
                 showAlert('Login successful! Redirecting...', 'success');
                 
+                console.log('✅ Login successful for:', user.name, 'Role:', user.position_name);
+                
                 // Redirect based on role
                 setTimeout(() => {
                     if (user.position_id === 5 || user.is_admin) {
+                        console.log('🚀 Redirecting to admin dashboard');
                         window.location.href = 'admin-dashboard-fixed.html';
                     } else if (user.position_id >= 3) {
+                        console.log('🚀 Redirecting to supervisor dashboard');
                         window.location.href = 'demo-supervisor.html';
                     } else {
+                        console.log('🚀 Redirecting to employee dashboard');
                         window.location.href = 'demo.html';
                     }
                 }, 1500);
@@ -648,6 +750,12 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Ensure basic data structure exists
+            ensureBasicData();
+            
+            // Ensure admin user exists
+            ensureAdminUser();
+            
             // Check existing login
             checkExistingLogin();
             
@@ -668,6 +776,11 @@
                     document.getElementById('regEmployeeId').value = empId;
                 }
             });
+            
+            // Debug info
+            console.log('🔧 Auth system initialized');
+            console.log('👥 Available employees:', getEmployees().length);
+            console.log('📧 Admin user exists:', getEmployees().some(e => e.is_admin));
         });
 
         // Global logout function
